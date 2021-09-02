@@ -1,0 +1,59 @@
+doctype html
+html(lang="en")
+    head
+        include ../../includes/header.pug
+        include ../../includes/mixins
+        script(src='/js/sidebar.js', defer)
+        
+        script(src='/js/management.js', defer)
+        link(rel='stylesheet', href='/css/sidebar.css')
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/management.css')
+        
+    body 
+        include ../../includes/sidebar.pug
+
+        #sidebarExtention.bf-light
+            header.text-center.pt-4 
+                .large-icon.bg-white.round 
+                    if guild.icon
+                        img.round(src=guild.iconURL({dynamic: true, size: 128 }), alt = guild.name)
+                    else
+                        p.abbr #{guild.nameAcronym}
+                h4#overview.pt-2 #{guild.name}
+            .tabs.navbar-nav
+                .category
+                a(href = '/servers/' + guild.id).cursor-pointer Overview
+                a(href = '/servers/' + guild.id + '/general').cursor-pointer #[i.fas.fa-cogs.ps-2.text-muted] General
+                a(href = '/servers/' + guild.id + '/management').cursor-pointer #[i.fas.fa-users-cog.ps-2.text-muted] Team Management
+                a(href = '/servers/' + guild.id + '/stores').cursor-pointer #[i.fas.fa-store-alt.ps-2.text-muted] Stores
+                a(href = '/servers/' + guild.id + '/stats').cursor-pointer #[i.fas.fa-chart-line.ps-2.text-muted] Stats
+
+        include ../../includes/navbar.pug
+
+        section#mainContent
+            h1.display-5.text-center Team Settings
+            p.lead.text-center Manage the teams on your server.
+            hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
+            if !guildExists
+                h3.text-center(style={'font-style': 'italic', color: 'red'}) Please initiate the server before attempting to change settings.
+            else
+                .container
+                    a.btn.btn-primary(href='maketeam/', role='button') 
+                        i.fas.fa-plus Create New
+                    table.table.table-hover
+                        thead
+                            tr
+                                th(scope='col') #
+                                th(scope='col') Team Name
+                                th(scope='col') Team Points
+                                th(scope='col') Tier
+                                th.col-3(scope='col') Team Flag
+                                th.text-center(scope='col') Actions
+                        tbody 
+                            +generateTeamTable(allTeams)
+
+
+
+        
+        

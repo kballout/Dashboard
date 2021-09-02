@@ -1,0 +1,32 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+    img#thumbnail(src = "/images/GuildMaster.png", alt = 'avatar')
+    a.navbar-brand.ps-5(href='/') Guild Master
+    vertical
+    button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarNavAltMarkup', aria-controls='navbarNavAltMarkup', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarNavAltMarkup.collapse.navbar-collapse
+       ul.nav.navbar-nav
+        li.ps-2(class=(title == 'manageServer') ? 'active' : null)
+          a(href='/dashboard') Manage Server
+        li.ps-3(class=(title == 'about') ? 'active' : null)
+          a(href='/') Commands
+        li.ps-3(class=(title == 'commands') ? 'active' : null)
+          a(href='/') About
+    .navbar-nav.ml-auto#loginSection
+      if user
+        .dropdown.mx-4.mt-2
+          .dropdown-toggle(type='button', data-bs-toggle='dropdown', aria-haspopup = 'true',aria-expanded='false')
+            img.user-avatar.round(src = user.avatarUrl(32))
+            span.ps-2(style={color: 'white'}) #{user.username}
+          .dropdown-menu.dropdown.bg-dark(style={color: 'white'})
+            a.dropdown-item(href='/dashboard') Dashboard
+            hr
+            a.dropdown-item(href='/logout') Logout
+      else 
+        a.nav-link(href='/login') 
+          i.fas.fa-sign-in-alt.ps-2
+          span.ps-2 Login
+if msg 
+  script window.location.reload()
+
+

@@ -1,0 +1,37 @@
+.jumbotron {
+    margin-top: 25vh;
+    color: white;
+    font-family:Arial, Helvetica, sans-serif;
+     
+  }
+vertical{
+  color: white;
+  position: relative;
+  background-color: white;
+  margin-right: 5px;
+  height: 30px;
+  border-left: 1px solid white;
+}
+
+#thumbnail{
+  border-radius: 50%;
+  width: 50px;
+  left: 30px;
+  position: relative;
+  height: 50px;
+}
+title{
+  color:white;
+}
+#loginSection{
+  position: relative;
+  right: 25px;
+}
+
+body{
+  background-image: url('/images/transparent.png');
+  background-size: 40%;
+  background-repeat:no-repeat;
+  background-position:inherit;
+  
+}

@@ -1,0 +1,56 @@
+
+table{
+    color: white;
+    padding: 30px;
+    --bs-table-hover-bg: rgb(12 52 205 / 95%) !important;
+}
+td, th{
+    color:white;
+    white-space: nowrap;
+}
+input[type = 'submit'], #deleteBtn{
+    width: fit-content;
+    height: fit-content;   
+}
+
+input[type = text], input[type = number]{
+    width: 70px;
+    height: 35px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+}
+input[type = number]{
+    width: 70px;
+}
+label{
+    padding-right: 2px;
+}
+#teamFlag{
+    width: 700px;
+}
+#teamTitle{
+    text-align: center;
+    margin-top: 30px;
+}
+.row{
+    display: flexbox;
+    justify-content: center;
+}
+.container{
+    background-color: rgba(7, 15, 46, 0.952);
+    padding: 10px;
+    border: 2px solid white;
+    width: 90%;
+}
+input[type="submit"]{
+    float:right;
+}
+
+#teamName{
+    width: 150px;
+}
+
+.modal{
+    color: black;
+}

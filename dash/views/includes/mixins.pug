@@ -1,0 +1,355 @@
+mixin general(settings)
+    form#generalForm(name = 'generalForm', action='/servers/' + guild.id + '/general', method='POST')  
+        .row
+            .col-2
+                .container
+                    h2 #{settings[0].term}
+                    p.small Summary: #{settings[0].description}.
+                    hr
+                    label(for='exchange') Exchange Rate:
+                    input#exchange(name = 'exchange', type='number', input='exchange', min= '0', step = 0.1) 
+            .col-2
+                .container
+                    h2 #{settings[1].term}
+                    p.small Summary: #{settings[1].description}.
+                    hr
+                    label(for='maxOffenses') Maximum Offenses:
+                    input#maxOffenses(name = 'maxOffenses', type='number', input='maxOffenses', min = '1')    
+            .col-2
+                .container
+                    h2 #{settings[2].term}
+                    p.small Summary: #{settings[2].description}.
+                    hr
+                    label(for='dailyChallenges') Daily Challenges:
+                    input#dailyChallenges(name = 'dailyChallenges', type='number', input='dailyChallenges', min = '0')     
+            .col-2
+                .container
+                    h2 #{settings[3].term}
+                    p.small Summary: #{settings[3].description}.
+                    hr
+                    label(for='bonusAmount') Bonus Amount:
+                    input#bonusAmount(name = 'bonusAmount', type='number', input='bonusAmount', min = '0', step = 0.1)    
+            .col-2
+                .container
+                    h2 #{settings[4].term}
+                    p.small Summary: #{settings[4].description}.
+                    hr
+                    label(for='level1Buyer') Level 1 Buyer:
+                    input#level1Buyer(name = 'level1Buyer', type='number', input='level1Buyer', min = '1')      
+            .col-2
+                .container
+                    h2 #{settings[5].term}
+                    p.small Summary: #{settings[5].description}.
+                    hr
+                    label(for='level2Buyer') Level 2 Buyer:
+                    input#level2Buyer(name = 'level2Buyer', type='number', input='level2Buyer', min = '1')      
+            .col-2(style={'align-content': 'center'})
+                .container
+                    h2 #{settings[6].term}
+                    p.small Summary: #{settings[6].description}.
+                    hr
+                    label(for='level3Buyer') Level 3 Buyer:
+                    input#level3Buyer(name = 'level3Buyer', type='number', input='level3Buyer', min = '1')
+        input(type='submit', value = 'save') 
+                
+mixin time(settings)
+    form#timeForm(name = 'timeForm', action='/servers/' + guild.id + '/time', method='POST')
+        .row 
+            .col-2
+                .container
+                    h2 #{settings[0].term}
+                    p.small Summary: #{settings[0].description}.
+                    hr  
+                    label(for='day') Choose a day:
+                        select#day
+                            option(value='none') -
+                            option(value='off') Off
+                            option(value='sunday') Sunday
+                            option(value='monday') Monday
+                            option(value='tuesday') Tuesday
+                            option(value='wednesday') Wednesday
+                            option(value='thursday') Thursday
+                            option(value='friday') Friday
+                            option(value='saturday') Saturday
+            .col-2
+                .container
+                    h2 #{settings[1].term}
+                    p.small Summary: #{settings[1].description}.
+                    hr
+                    label(for='time') Choose a time:
+                        select#time
+                            option(value='none') -
+                            option(value='off') Off
+                            option(value='tenAM') 10:00 AM
+                            option(value='elevenAM') 11:00 AM
+                            option(value='twelvePM') 12:00 PM
+                            option(value='onePM') 1:00 PM
+                            option(value='twoPM') 2:00 PM
+                            option(value='threePM') 3:00 PM
+                            option(value='fourPM') 4:00 PM
+            .col-2
+                .container
+                    h2 #{settings[2].term}
+                    p.small Summary: #{settings[2].description}.
+                    hr
+                    label(for='amount') Choose an amount:
+                        select#amount
+                            option(value='none') -
+                            option(value='oneHR') 1 Hour
+                            option(value='twoHRs') 2 Hours
+                            option(value='threeHRs') 3 Hours
+                            option(value='fourHRs') 4 Hours
+                            option(value='fiveHRs') 5 Hours
+                            option(value='sixHRs') 6 Hours
+        input(type='submit', value = 'save') 
+
+mixin rankMult(settings)
+    form#rankMForm(name = 'rankMForm', action='/servers/' + guild.id + '/rankM', method='POST')
+        .row
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[0].term}
+                        p.small Summary: #{settings[0].description}.
+                        hr
+                        label(for='equalRank') Equal Rank Multiplier:
+                        input#equalRank(name = 'equalRank', type='number', input='equalRank', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[1].term}
+                        p.small Summary: #{settings[1].description}.
+                        hr
+                        label(for='oneHigherRank') One Rank Higher:
+                        input#oneHigherRank(name = 'oneHigherRank', type='number', input='oneHigherRank', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[2].term}
+                        p.small Summary: #{settings[2].description}.
+                        hr
+                        label(for='twoHigherRanks') Two Ranks Higher:
+                        input#twoHigherRanks(name = 'twoHigherRanks', type='number', input='twoHigherRanks', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[3].term}
+                        p.small Summary: #{settings[3].description}.
+                        hr
+                        label(for='oneLowerRank') One Rank Lower:
+                        input#oneLowerRank(name = 'oneLowerRank', type='number', input='oneLowerRank', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[4].term}
+                        p.small Summary: #{settings[4].description}.
+                        hr
+                        label(for='twoLowerRanks') Two Ranks Lower:
+                        input#twoLowerRanks(name = 'twoLowerRanks', type='number', input='twoLowerRanks', min = '0', step = '0.1')
+        input(type='submit', value = 'save') 
+
+mixin tierMult(settings)
+    form#tierMForm(name = 'tierMForm', action='/servers/' + guild.id + '/tierM', method='POST')
+        .row
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[0].term}
+                        p.small Summary: #{settings[0].description}.
+                        hr
+                        label(for='equalTier') Equal Tier Multiplier:
+                        input#equalTier(name = 'equalTier', type='number', input='equalTier', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[1].term}
+                        p.small Summary: #{settings[1].description}.
+                        hr
+                        label(for='oneHigherTier') One Tier Higher:
+                        input#oneHigherTier(name = 'oneHigherTier', type='number', input='oneHigherTier', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[2].term}
+                        p.small Summary: #{settings[2].description}.
+                        hr
+                        label(for='twoHigherTiers') Two Tiers Higher:
+                        input#twoHigherTiers(name = 'twoHigherTiers', type='number', input='twoHigherTiers', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[3].term}
+                        p.small Summary: #{settings[3].description}.
+                        hr
+                        label(for='oneLowerTier') One Tier Lower:
+                        input#oneLowerTier(name = 'oneLowerTier', type='number', input='oneLowerTier', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[4].term}
+                        p.small Summary: #{settings[4].description}.
+                        hr
+                        label(for='twoLowerTiers') Two Tiers Lower:
+                        input#twoLowerTiers(name = 'twoLowerTiers', type='number', input='twoLowerTiers', min = '0', step = '0.1')
+        input(type='submit', value = 'save')
+
+mixin teamMult(settings)
+    form#teamMForm(name = 'teamMForm', action='/servers/' + guild.id + '/teamM', method='POST')
+        .row
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[0].term}
+                        p.small Summary: #{settings[0].description}.
+                        hr
+                        label(for='equalTeam') Equal Team Multiplier:
+                        input#equalTeam(name = 'equalTeam', type='number', input='equalTeam', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[1].term}
+                        p.small Summary: #{settings[1].description}.
+                        hr
+                        label(for='oneHigherTeam') One Team Tier Higher:
+                        input#oneHigherTeam(name = 'oneHigherTeam', type='number', input='oneHigherTeam', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[2].term}
+                        p.small Summary: #{settings[2].description}.
+                        hr
+                        label(for='twoHigherTeams') Two Team Tiers Higher:
+                        input#twoHigherTeams(name = 'twoHigherTeams', type='number', input='twoHigherTeams', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[3].term}
+                        p.small Summary: #{settings[3].description}.
+                        hr
+                        label(for='oneLowerTeam') One Team Tier Lower:
+                        input#oneLowerTeam(name = 'oneLowerTeam', type='number', input='oneLowerTeam', min = '0', step = '0.1')
+            .col-1(style={'align-content': 'center'})
+                    .container
+                        h2 #{settings[4].term}
+                        p.small Summary: #{settings[4].description}.
+                        hr
+                        label(for='twoLowerTeams') Two Team Tiers Lower:
+                        input#twoLowerTeams(name = 'twoLowerTeams', type='number', input='twoLowerTeams', min = '0', step = '0.1')
+        input(type='submit', value = 'save')
+
+mixin icons(settings)
+   - var driveUrl = "https://drive.google.com/thumbnail\\?id=.*|https://drive.google.com/uc\\?export=download&id=.*|none"
+    form#iconsForm(name = 'iconsForm', action='/servers/' + guild.id + '/icons', method='POST')  
+        .row
+            .col-2
+                .container
+                    h2 #{settings[0].term}
+                    p.small Summary: #{settings[0].description}.
+                    hr
+                    label(for='matchIcon') Matchmaking Icon:
+                    br
+                    input#matchIcon.pb-2(name = 'matchIcon', type='text', input='matchIcon', pattern = driveUrl) 
+            .col-2
+                .container
+                    h2 #{settings[1].term}
+                    p.small Summary: #{settings[1].description}.
+                    hr
+                    label(for='bossIcon') Boss Icon:
+                    br
+                    input#bossIcon.pb-2(name = 'bossIcon', type='text', input='bossIcon', pattern = driveUrl)
+            .col-2
+                .container
+                    h2 #{settings[2].term}
+                    p.small Summary: #{settings[2].description}.
+                    hr
+                    label(for='bossWinIcon') Boss Win Icon:
+                    br
+                    input#bossWinIcon.pb-2(name = 'bossWinIcon', type='text', input='bossWinIcon', pattern = driveUrl)
+            .col-2
+                .container
+                    h2 #{settings[3].term}
+                    p.small Summary: #{settings[3].description}.
+                    hr
+                    label(for='bossLossIcon') Boss Loss Icon:
+                    br
+                    input#bossLossIcon.pb-2(name = 'bossLossIcon', type='text', input='bossLossIcon', pattern = driveUrl)
+            .col-2
+                .container
+                    h2 #{settings[4].term}
+                    p.small Summary: #{settings[4].description}.
+                    hr
+                    label(for='store1Icon') Store 1 Icon:
+                    br
+                    input#store1Icon.pb-2(name = 'store1Icon', type='text', input='store1Icon', pattern = driveUrl)
+            .col-2
+                .container
+                    h2 #{settings[5].term}
+                    p.small Summary: #{settings[5].description}.
+                    hr
+                    label(for='store2Icon') Store 2 Icon:
+                    br
+                    input#store2Icon.pb-2(name = 'store2Icon', type='text', input='store2Icon', pattern = driveUrl)
+            .col-2
+                .container
+                    h2 #{settings[6].term}
+                    p.small Summary: #{settings[6].description}.
+                    hr
+                    label(for='store3Icon') Store 3 Icon:
+                    br
+                    input#store3Icon.pb-2(name = 'store3Icon', type='text', input='store3Icon', pattern = driveUrl)
+            .col-2
+                .container
+                    h2 #{settings[7].term}
+                    p.small Summary: #{settings[7].description}.
+                    hr
+                    label(for='teamStoreIcon') Team Store Icon:
+                    br
+                    input#teamStoreIcon.pb-2(name = 'teamStoreIcon', type='text', input='teamStoreIcon', pattern = driveUrl)
+        input(type='submit', value = 'save')
+
+mixin generateTeamTable(allTeams)
+    - var count = 0
+    each team in allTeams
+        -count++
+        tr 
+            th(scope='row') #{count}
+            td #{team['Team Name']} 
+            td #{team['Points']}
+            td #{team['Tier']}
+            if team['Team Flag'] === 'https://drive.google.com/thumbnail?id='
+                td No
+            else 
+               td Yes
+            td.text-center
+                a.btn.btn-primary.me-2(href='edit/'+ team['Team Name'], role='button') Edit
+                button.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target= '#modal' + count)
+                    | Delete
+                .modal.fade(id = 'modal' + count ,tabindex='-1', aria-labelledby = '#modalLabel' + count, aria-hidden='true')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5(id = 'modalLabel' + count).modal-title Delete Team
+                                button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                            .modal-body
+                                | Are you sure you want to delete the team called 
+                                strong #{team['Team Name']}?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                a.button.btn.btn-primary(href='delete/'+ team['Team Name'], type='button') Confirm
+
+mixin generateStoreTable(store)
+    - var count = 0
+    a#editStore.btn.btn-primary.me-2(href='/servers/' + guild.id + '/makeItem/'+ store['Name'], role='button') 
+        i.fas.fa-plus New Item
+    each item in store['Items']
+        -count++
+        tr 
+            th(scope='row') #{item['Number']}
+            td #{item['Name']} 
+            td #{item['Qty']}
+            td #{item['Cost']}
+            td #{item['Available']}
+            td.text-center 
+                a#editStore.btn.btn-primary.me-2(href='editStore/'+ store['Name'] + '/' + item['Number'], role='button') Edit
+                button#deleteBtn.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#modal' + count)
+                    | Delete
+                .modal.fade(id = 'modal' + count,tabindex='-1', aria-labelledby='#modalLabel' + count, aria-hidden='true')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5(id = 'modalLabel' + count).modal-title Delete Item
+                                button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                            .modal-body
+                                | Are you sure you want to delete item # 
+                                strong #{item['Number']}
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                a.button.btn.btn-primary(href='delete/'+ store['Name'] + '/' + item['Number'], type='button') Confirm
+                
+                    

@@ -1,0 +1,89 @@
+doctype html
+html(lang="en")
+    head
+        include ../../../includes/header.pug
+        include ../../../includes/mixins
+        script(src='/js/sidebar.js', defer)
+        
+        script(src='/js/management.js', defer)
+        link(rel='stylesheet', href='/css/sidebar.css')
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/management.css')
+        
+    body 
+        include ../../../includes/sidebar.pug
+
+        #sidebarExtention.bf-light
+            header.text-center.pt-4 
+                .large-icon.bg-white.round 
+                    if guild.icon
+                        img.round(src=guild.iconURL({dynamic: true, size: 128 }), alt = guild.name)
+                    else
+                        p.abbr #{guild.nameAcronym}
+                h4#overview.pt-2 #{guild.name}
+            .tabs.navbar-nav
+                .category
+                a(href = '/servers/' + guild.id).cursor-pointer Overview
+                a(href = '/servers/' + guild.id + '/general').cursor-pointer #[i.fas.fa-cogs.ps-2.text-muted] General
+                a(href = '/servers/' + guild.id + '/management').cursor-pointer #[i.fas.fa-users-cog.ps-2.text-muted] Team Management
+                a(href = '/servers/' + guild.id + '/stores').cursor-pointer #[i.fas.fa-store-alt.ps-2.text-muted] Stores
+                a(href = '/servers/' + guild.id + '/stats').cursor-pointer #[i.fas.fa-chart-line.ps-2.text-muted] Stats
+
+        include ../../../includes/navbar.pug
+
+        section#mainContent
+            h1.display-5.text-center Team Settings
+            p.lead.text-center Manage the teams on your server.
+            hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
+            if !guildExists
+                h3.text-center(style={'font-style': 'italic', color: 'red'}) Please use the ~initiate command before attempting to change settings
+            else
+                h2#teamTitle Edit Team #{team['Team Name']}
+                form#editTeamForm(name = 'editTeamForm', action='/servers/' + guild.id + '/edit/' + team['Name'], method = 'POST')  
+                    .container(style={'background-color': 'rgb(3, 5, 15)'})
+                        a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/management', role='button') Return
+                        .row
+                            .col-4
+                                .container
+                                    h4 Team Points
+                                    p.small Summary: edit the team's current points.
+                                    hr
+                                    p(style={'font-style': 'italic'}) currently: #{team['Points']}
+                                    label(for='teamPoints') Team Points:
+                                    input#teamPoints.pb-2(name = 'teamPoints', type='number', input='teamPoints', step = 0.1)
+                            .col-4
+                                .container
+                                    h4 Team Tier
+                                    p.small Summary: edit the team's tier (1-7).
+                                    hr
+                                    p(style={'font-style': 'italic'}) currently: #{team['Tier']}
+                                    label(for='teamTier') Team Tier:
+                                    input#teamTier.pb-2(name = 'teamTier', type='number', input='teamTier', min = 1, max = 7)
+                            .col-12
+                                .container.mt-4
+                                    h4 Team Flag
+                                    p.small Summary: edit the team's flag (format:https://drive.google.com/thumbnail?id=). You can also input none to remove the current flag.
+                                    hr
+                                    p(style={'font-style': 'italic'}) currently: #{team['Team Flag']}
+                                    label(for='teamFlag') Team Flag URL:
+                                    input#teamFlag.pb-2(name = 'teamFlag', type='text', input='teamFlag', pattern = 'https://drive.google.com/thumbnail\\?id=.*|none')
+                            input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
+                            button#deleteBtn.btn.btn-primary.mt-2(type='button', data-bs-toggle='modal', data-bs-target='#exampleModal')
+                                | Delete
+                            #exampleModal.modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true')
+                                .modal-dialog
+                                    .modal-content
+                                        .modal-header
+                                            h5#exampleModalLabel.modal-title Delete Team
+                                            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                        .modal-body
+                                            | Are you sure you want to delete the team called 
+                                            strong #{team['Team Name']}?
+                                        .modal-footer
+                                            button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                            a.button.btn.btn-primary(href='/servers/' + guild.id + '/delete/'+ team['Team Name'], type='button') Confirm
+
+
+
+        
+        

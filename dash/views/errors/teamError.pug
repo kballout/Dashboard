@@ -1,0 +1,10 @@
+doctype html
+html(lang='en')
+    head
+        include ../includes/header.pug
+        link(rel='stylesheet', href='/css/index.css')
+    body
+        .jumbotron.text-center.bg-transparent
+            h1.display-3 Team Creation/Deletion Error
+            p.lead An error has occurred. Either the team name is currently in use and cant be created, or the team could not be found.
+            a.btn.btn-dark(href = '/') Return Home

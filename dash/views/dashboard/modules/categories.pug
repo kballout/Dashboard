@@ -1,0 +1,58 @@
+.row
+    .accordion
+        .accordion-item
+            h2#heading1.accordion-header
+                button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse1', aria-expanded='true', aria-controls='collapse1')
+                    | General Settings
+            #collapse1.accordion-collapse.collapse.show(aria-labelledby='heading1')
+                .accordion-body
+                    +general(categories[0].settings)
+        .accordion-item
+            h2#heading2.accordion-header
+                button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse2', aria-expanded='true', aria-controls='collapse2')
+                    | Scheduler
+            #collapse2.accordion-collapse.collapse.show(aria-labelledby='heading2')
+                .accordion-body
+                    +time(categories[1].settings)
+        .accordion-item
+            h2#heading3.accordion-header
+                button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse3', aria-expanded='true', aria-controls='collapse3')
+                    | Multipliers
+            #collapse3.accordion-collapse.collapse.show(aria-labelledby='heading3')
+                .accordion-body
+                    ul#pills-tab.nav.nav-pills.mb-3.justify-content-center(role='tablist')
+                        li.nav-item(role='presentation')
+                            button#pills-rank-tab.nav-link.active(data-bs-toggle='pill', data-bs-target='#pills-rank', type='button', role='tab', aria-controls='pills-rank', aria-selected='true') Rank 
+                        li.nav-item(role='presentation')
+                            button#pills-tier-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-tier', type='button', role='tab', aria-controls='pills-tier', aria-selected='false') Tier 
+                        li.nav-item(role='presentation')
+                            button#pills-team-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-team', type='button', role='tab', aria-controls='pills-team', aria-selected='false') Team 
+                    #pills-tabContent.tab-content
+                        #pills-rank.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-rank-tab')
+                            +rankMult(categories[2].settings)
+                        #pills-tier.tab-pane.fade(role='tabpanel', aria-labelledby='pills-tier-tab')
+                            +tierMult(categories[3].settings)
+                        #pills-team.tab-pane.fade(role='tabpanel', aria-labelledby='pills-team-tab')
+                            +teamMult(categories[4].settings)          
+        .accordion-item
+            h2#heading4.accordion-header
+                button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse4', aria-expanded='true', aria-controls='collapse4')
+                    | Icons
+            #collapse4.accordion-collapse.collapse.show(aria-labelledby='heading4')
+                .accordion-body
+                    +icons(categories[5].settings)  
+
+
+    
+
+
+
+
+  
+
+
+
+
+
+
+

@@ -1,0 +1,54 @@
+section#overviewModule.module.px-5
+  h3.text-center #{guild.name}
+  h4.text-center Overview
+    .form-group.mt-5.text-center
+      .row.text-center
+        .col-lg-3.col-md-6.ms-auto
+          .border.rounded.m-3.p-3
+            p.uppercase
+              i.fas.fa-user-alt
+              strong.ml-1 Members
+            p.mb-0 #{guild.memberCount}
+        .col-lg-3.col-md-6
+          .border.rounded.m-3.p-3
+            p.uppercase
+              i.fas.fa-at
+              strong.ml-1 Roles
+            p.mb-0 #{guild.roles.cache.size}
+        .col-lg-3.col-md-6.me-auto
+          .border.rounded.m-3.p-3
+            p.uppercase
+              i.fas.fa-hashtag
+              strong.ml-1 Channels
+            p.mb-0 #{guild.channels.cache.size}
+    if !guildExists
+      .col-9#initBox
+        .container
+          .form-check.form-switch
+            input#initSwitch.form-check-input(type='checkbox', disabled)
+          h4 Initialization
+          p(style={'font-size': 'smaller'}) Initialize the activity to add all channels and roles related to the guild master. The bot must be initialized in order to change settings. 
+          hr
+          a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/initialize', role='button') Initialize
+    else 
+      .col-9#initBox
+        .container
+          .form-check.form-switch
+            input#initSwitch.form-check-input(type='checkbox', disabled, checked = '')
+          h4 Initialization
+          p(style={'font-size': 'smaller'}) Terminate the activity to remove all channels and roles related to the guild master. 
+          hr
+          button.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#exampleModal')
+            | Terminate
+          #exampleModal.modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true')
+            .modal-dialog(style={color: 'black'})
+              .modal-content
+                .modal-header
+                  h5#exampleModalLabel.modal-title Terminate Activity
+                  button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                .modal-body.small
+                  | Are you sure you want to terminate the activity? Once this is done all roles and channels associated with guild master will be deleted as well as all player information.
+                .modal-footer
+                  button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                  a.button.btn.btn-primary(href='/servers/' + guild.id + '/terminate', role='button', type='button') Confirm
+

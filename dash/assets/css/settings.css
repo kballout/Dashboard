@@ -1,0 +1,104 @@
+li {
+    cursor: pointer;
+}
+
+.accordion-button,
+.accordion-button:not(.collapsed){
+    background-color: rgb(3, 5, 15);
+    color:white;
+    
+    font-weight:500;
+    font-size: 100%;
+}
+.accordion-body{
+    background-color: rgb(3, 5, 15);
+}
+
+.accordion-button:focus{
+    background-color: #0d6efd;
+    color:white;
+    font-weight: 500;
+}
+.accordion-item{
+    background-color: rgba(7, 15, 46, 0.952);
+    border-width: medium;
+    margin-top: 15px;
+}
+
+h2{
+    font-size: x-large;
+}
+
+p{
+    font-style: italic;
+}
+
+.container{
+    text-align: left;
+    width: 400px;
+    background-color: rgba(7, 15, 46, 0.952);
+    padding: 20px;
+}
+label{
+    float: left;
+    padding-right: 2px;
+    padding-top: 2px;
+}
+input{
+    width: 70px;
+    border-radius: 6px;
+}
+select{
+    width: 120px;
+    border-radius: 6px;
+    position:relative;
+    left: 10px;
+}
+input[type="submit"]{
+    align-items: center;
+    background-color: #0d6efd;
+    color:white;
+    width: 150px;
+    height: 40px;
+    font-size: larger;
+    font-weight: 600;
+    text-align: center;
+    
+}
+input[type="submit"]:hover{
+    background-color:  rgba(7, 15, 46, 0.952);
+}
+
+
+.col-2{
+    display: flex;
+    
+    justify-content: space-evenly;
+    align-items: stretch;
+    width: 350px;
+    padding: 10px;
+  
+}
+
+.col-1{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    width: 220px;
+    padding: 10px;
+  
+}
+
+#matchIcon, #bossIcon, #bossWinIcon, #bossLossIcon,
+#store1Icon, #store2Icon, #store3Icon, #teamStoreIcon{
+    width: 300px;
+}
+
+.alert{
+    width: 350px;
+    position: sticky;
+    top: 0;
+    left: 1500px;
+    visibility: hidden;
+}
+  

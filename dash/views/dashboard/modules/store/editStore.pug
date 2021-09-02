@@ -1,0 +1,91 @@
+doctype html
+html(lang="en")
+    head
+        include ../../../includes/header.pug
+        include ../../../includes/mixins
+        script(src='/js/sidebar.js', defer)
+        
+        script(src='/js/stores.js', defer)
+        link(rel='stylesheet', href='/css/sidebar.css')
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/stores.css')
+        
+    body 
+        include ../../../includes/sidebar.pug
+
+        #sidebarExtention.bf-light
+            header.text-center.pt-4 
+                .large-icon.bg-white.round 
+                    if guild.icon
+                        img.round(src=guild.iconURL({dynamic: true, size: 128 }), alt = guild.name)
+                    else
+                        p.abbr #{guild.nameAcronym}
+                h4#overview.pt-2 #{guild.name}
+            .tabs.navbar-nav
+                .category
+                a(href = '/servers/' + guild.id).cursor-pointer Overview
+                a(href = '/servers/' + guild.id + '/general').cursor-pointer #[i.fas.fa-cogs.ps-2.text-muted] General
+                a(href = '/servers/' + guild.id + '/management').cursor-pointer #[i.fas.fa-users-cog.ps-2.text-muted] Team Management
+                a(href = '/servers/' + guild.id + '/stores').cursor-pointer #[i.fas.fa-store-alt.ps-2.text-muted] Stores
+                a(href = '/servers/' + guild.id + '/stats').cursor-pointer #[i.fas.fa-chart-line.ps-2.text-muted] Stats
+
+        include ../../../includes/navbar.pug
+
+        section#mainContent
+            h1.display-5.text-center Store Settings
+            p.lead.text-center
+            hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
+            if !guildExists
+                h3.text-center(style={'font-style': 'italic', color: 'red'}) Please initiate the server before attempting to change settings.
+            else
+                .container(style={'background-color' : 'rgb(3, 5, 15)'})
+                    h2.text-center #{store}
+                    h3.text-center Item ##{item['Number']} Settings
+                    a#return.btn.btn-primary.mb-5(href='/servers/' + guild.id + '/stores', role='button') Return
+                    form#editStoreForm(name = 'editStoreForm', action='/servers/' + guild.id + '/editStore/' + store + '/' + item['Number'], method = 'POST')  
+                        .row
+                            .col-7
+                                .container
+                                    h2 Item Name
+                                    p.small Change the name of the item.
+                                    p#currItem Currently: #{item['Name']}
+                                    hr
+                                    label(for='itemName') Name:
+                                    input#itemName(name = 'itemName', type='text', input='itemName')
+                            .col-4
+                                .container
+                                    h2 Availability
+                                    p.small Change the availability of the item. This indicates if the item will be shown in the store.
+                                    p#currItem Currently: #{item['Available']}
+                                    hr
+                                    input#available(name = 'available', hidden, value = '')
+                                    label(for='availability') Available:
+                                        select#availability.ps-2
+                                            if item['Available'] === true
+                                                option(value='true') true 
+                                                option(value='false') false
+                                            else
+                                                option(value='false') false
+                                                option(value='true') true 
+                        .row
+                            .col-4
+                                .container
+                                    h2 Item Quantity
+                                    p.small Change the quantity of the item.
+                                    p#currItem Currently: #{item['Qty']}
+                                    hr
+                                    label(for='itemQuantity') Quantity:
+                                    input#itemQuantity(name = 'itemQuantity', type='number', input='itemQuantity', min = 0)
+                            .col-4
+                                .container
+                                    h2 Item Cost
+                                    p.small Change the cost of the item.
+                                    p#currItem Currently: #{item['Cost']}
+                                    hr
+                                    label(for='itemCost') Cost:
+                                    input#itemCost(name = 'itemCost', type='number', input='itemCost', min = 0)
+                        .row  
+                            input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
+                            a#deleteBtn.btn.btn-primary.mt-2(href='/servers/' + guild.id + '/stores', role='button') Delete
+                            
+                        

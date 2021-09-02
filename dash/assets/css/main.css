@@ -1,0 +1,76 @@
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-color: rgb(31, 33, 41);
+    color: var(--font);
+    font-family:Arial, Helvetica, sans-serif; 
+  }
+  
+  h1, h2, h3, h4, h5 {
+    color: var(--heading);
+  }
+  
+  code.hljs {
+    background-color: var(--background-secondary);
+  }
+  
+  .user-avatar {
+    max-width: 36px;
+  }
+  
+  .navbar a {
+    color: white;
+  }
+  
+  .table {
+    color: var(--heading);
+  }
+  
+  .dropdown-menu {
+    background-color: inherit;
+  }
+  .bg-dark{
+    background-color: rgb(3, 5, 15) !important;
+  }
+
+  #mainContent{
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    position: relative;
+    overflow-y: scroll;
+    height: 620px;
+    padding: 20px;
+  }
+
+  #overviewModule{
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+  }
+
+  ::-webkit-scrollbar{
+    background: rgb(3, 5, 15);
+  }
+  
+  ::-webkit-scrollbar-thumb{
+    background: rgba(14, 29, 90, 0.952);
+    border-radius: 10px;
+  }
+
+  #initBox{
+    margin-left: auto;
+    margin-right: auto;
+    font-size: smaller;
+   
+    background-color: rgba(14, 29, 90, 0.952);
+    padding: 10px;
+}
+input[type = checkbox]{
+  font-size: x-large;
+  position: relative;
+  left: 100%;
+}
+.form-check-input:checked{
+  background-color: green;
+}
