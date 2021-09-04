@@ -74,3 +74,11 @@ input[type = checkbox]{
 .form-check-input:checked{
   background-color: green;
 }
+
+#notify{
+  width: 350px;
+  position: sticky;
+  top: 0;
+  left: 1500px;
+  visibility: hidden;
+}

@@ -1,10 +1,11 @@
-mixin general(settings)
+mixin general(settings, data, conv3)
     form#generalForm(name = 'generalForm', action='/servers/' + guild.id + '/general', method='POST')  
         .row
             .col-2
                 .container
                     h2 #{settings[0].term}
                     p.small Summary: #{settings[0].description}.
+                    p.small#currExRate(style={'font-style': 'italic'}) Currently: #{conv3}%
                     hr
                     label(for='exchange') Exchange Rate:
                     input#exchange(name = 'exchange', type='number', input='exchange', min= '0', step = 0.1) 
@@ -12,6 +13,7 @@ mixin general(settings)
                 .container
                     h2 #{settings[1].term}
                     p.small Summary: #{settings[1].description}.
+                    p.small#currMaxOffenses(style={'font-style': 'italic'}) Currently: #{data['Max Offenses']}
                     hr
                     label(for='maxOffenses') Maximum Offenses:
                     input#maxOffenses(name = 'maxOffenses', type='number', input='maxOffenses', min = '1')    
@@ -19,6 +21,7 @@ mixin general(settings)
                 .container
                     h2 #{settings[2].term}
                     p.small Summary: #{settings[2].description}.
+                    p.small#currDailyChallenges(style={'font-style': 'italic'}) Currently: #{data['Daily Challenges']}
                     hr
                     label(for='dailyChallenges') Daily Challenges:
                     input#dailyChallenges(name = 'dailyChallenges', type='number', input='dailyChallenges', min = '0')     
@@ -26,6 +29,7 @@ mixin general(settings)
                 .container
                     h2 #{settings[3].term}
                     p.small Summary: #{settings[3].description}.
+                    p.small#currBonusAmount(style={'font-style': 'italic'}) Currently: #{data['Bonus Amount']}
                     hr
                     label(for='bonusAmount') Bonus Amount:
                     input#bonusAmount(name = 'bonusAmount', type='number', input='bonusAmount', min = '0', step = 0.1)    
@@ -33,6 +37,7 @@ mixin general(settings)
                 .container
                     h2 #{settings[4].term}
                     p.small Summary: #{settings[4].description}.
+                    p.small#currLevel1Buyer(style={'font-style': 'italic'}) Currently: #{data['Buyer 1 Level']}
                     hr
                     label(for='level1Buyer') Level 1 Buyer:
                     input#level1Buyer(name = 'level1Buyer', type='number', input='level1Buyer', min = '1')      
@@ -40,6 +45,7 @@ mixin general(settings)
                 .container
                     h2 #{settings[5].term}
                     p.small Summary: #{settings[5].description}.
+                    p.small#currLevel2Buyer(style={'font-style': 'italic'}) Currently: #{data['Buyer 2 Level']}
                     hr
                     label(for='level2Buyer') Level 2 Buyer:
                     input#level2Buyer(name = 'level2Buyer', type='number', input='level2Buyer', min = '1')      
@@ -47,18 +53,20 @@ mixin general(settings)
                 .container
                     h2 #{settings[6].term}
                     p.small Summary: #{settings[6].description}.
+                    p.small#currLevel3Buyer(style={'font-style': 'italic'}) Currently: #{data['Buyer 3 Level']}
                     hr
                     label(for='level3Buyer') Level 3 Buyer:
                     input#level3Buyer(name = 'level3Buyer', type='number', input='level3Buyer', min = '1')
         input(type='submit', value = 'save') 
                 
-mixin time(settings)
+mixin time(settings, data, conv1, conv2)
     form#timeForm(name = 'timeForm', action='/servers/' + guild.id + '/time', method='POST')
         .row 
             .col-2
                 .container
                     h2 #{settings[0].term}
                     p.small Summary: #{settings[0].description}.
+                    p.small#currDay(style={'font-style': 'italic'}) Currently: #{conv1}
                     hr  
                     label(for='day') Choose a day:
                         select#day
@@ -75,6 +83,7 @@ mixin time(settings)
                 .container
                     h2 #{settings[1].term}
                     p.small Summary: #{settings[1].description}.
+                    p.small#currTime(style={'font-style': 'italic'}) Currently: #{conv2}
                     hr
                     label(for='time') Choose a time:
                         select#time
@@ -91,6 +100,7 @@ mixin time(settings)
                 .container
                     h2 #{settings[2].term}
                     p.small Summary: #{settings[2].description}.
+                    p.small#currAmount(style={'font-style': 'italic'}) Currently: #{data['Boost Time Limit']} hrs
                     hr
                     label(for='amount') Choose an amount:
                         select#amount
@@ -103,13 +113,14 @@ mixin time(settings)
                             option(value='sixHRs') 6 Hours
         input(type='submit', value = 'save') 
 
-mixin rankMult(settings)
+mixin rankMult(settings, data)
     form#rankMForm(name = 'rankMForm', action='/servers/' + guild.id + '/rankM', method='POST')
         .row
             .col-1(style={'align-content': 'center'})
                     .container
                         h2 #{settings[0].term}
                         p.small Summary: #{settings[0].description}.
+                        p.small#currRankEqual(style={'font-style': 'italic'}) Currently: #{data['Rank Multipliers']['Equal']}
                         hr
                         label(for='equalRank') Equal Rank Multiplier:
                         input#equalRank(name = 'equalRank', type='number', input='equalRank', min = '0', step = '0.1')
@@ -117,6 +128,7 @@ mixin rankMult(settings)
                     .container
                         h2 #{settings[1].term}
                         p.small Summary: #{settings[1].description}.
+                        p.small#currRank1Higher(style={'font-style': 'italic'}) Currently: #{data['Rank Multipliers']['One Higher']}
                         hr
                         label(for='oneHigherRank') One Rank Higher:
                         input#oneHigherRank(name = 'oneHigherRank', type='number', input='oneHigherRank', min = '0', step = '0.1')
@@ -124,6 +136,7 @@ mixin rankMult(settings)
                     .container
                         h2 #{settings[2].term}
                         p.small Summary: #{settings[2].description}.
+                        p.small#currRank2Higher(style={'font-style': 'italic'}) Currently: #{data['Rank Multipliers']['Two Higher']}
                         hr
                         label(for='twoHigherRanks') Two Ranks Higher:
                         input#twoHigherRanks(name = 'twoHigherRanks', type='number', input='twoHigherRanks', min = '0', step = '0.1')
@@ -131,6 +144,7 @@ mixin rankMult(settings)
                     .container
                         h2 #{settings[3].term}
                         p.small Summary: #{settings[3].description}.
+                        p.small#currRank1Lower(style={'font-style': 'italic'}) Currently: #{data['Rank Multipliers']['One Lower']}
                         hr
                         label(for='oneLowerRank') One Rank Lower:
                         input#oneLowerRank(name = 'oneLowerRank', type='number', input='oneLowerRank', min = '0', step = '0.1')
@@ -138,18 +152,20 @@ mixin rankMult(settings)
                     .container
                         h2 #{settings[4].term}
                         p.small Summary: #{settings[4].description}.
+                        p.small#currRank2Lower(style={'font-style': 'italic'}) Currently: #{data['Rank Multipliers']['Two Lower']}
                         hr
                         label(for='twoLowerRanks') Two Ranks Lower:
                         input#twoLowerRanks(name = 'twoLowerRanks', type='number', input='twoLowerRanks', min = '0', step = '0.1')
         input(type='submit', value = 'save') 
 
-mixin tierMult(settings)
+mixin tierMult(settings, data)
     form#tierMForm(name = 'tierMForm', action='/servers/' + guild.id + '/tierM', method='POST')
         .row
             .col-1(style={'align-content': 'center'})
                     .container
                         h2 #{settings[0].term}
                         p.small Summary: #{settings[0].description}.
+                        p.small#currTierEqual(style={'font-style': 'italic'}) Currently: #{data['Tier Multipliers']['Equal']}
                         hr
                         label(for='equalTier') Equal Tier Multiplier:
                         input#equalTier(name = 'equalTier', type='number', input='equalTier', min = '0', step = '0.1')
@@ -157,6 +173,7 @@ mixin tierMult(settings)
                     .container
                         h2 #{settings[1].term}
                         p.small Summary: #{settings[1].description}.
+                        p.small#currTier1Higher(style={'font-style': 'italic'}) Currently: #{data['Tier Multipliers']['One Higher']}
                         hr
                         label(for='oneHigherTier') One Tier Higher:
                         input#oneHigherTier(name = 'oneHigherTier', type='number', input='oneHigherTier', min = '0', step = '0.1')
@@ -164,6 +181,7 @@ mixin tierMult(settings)
                     .container
                         h2 #{settings[2].term}
                         p.small Summary: #{settings[2].description}.
+                        p.small#currTier2Higher(style={'font-style': 'italic'}) Currently: #{data['Tier Multipliers']['Two Higher']}
                         hr
                         label(for='twoHigherTiers') Two Tiers Higher:
                         input#twoHigherTiers(name = 'twoHigherTiers', type='number', input='twoHigherTiers', min = '0', step = '0.1')
@@ -171,6 +189,7 @@ mixin tierMult(settings)
                     .container
                         h2 #{settings[3].term}
                         p.small Summary: #{settings[3].description}.
+                        p.small#currTier1Lower(style={'font-style': 'italic'}) Currently: #{data['Tier Multipliers']['One Lower']}
                         hr
                         label(for='oneLowerTier') One Tier Lower:
                         input#oneLowerTier(name = 'oneLowerTier', type='number', input='oneLowerTier', min = '0', step = '0.1')
@@ -178,18 +197,20 @@ mixin tierMult(settings)
                     .container
                         h2 #{settings[4].term}
                         p.small Summary: #{settings[4].description}.
+                        p.small#currTier2Lower(style={'font-style': 'italic'}) Currently: #{data['Tier Multipliers']['Two Lower']}
                         hr
                         label(for='twoLowerTiers') Two Tiers Lower:
                         input#twoLowerTiers(name = 'twoLowerTiers', type='number', input='twoLowerTiers', min = '0', step = '0.1')
         input(type='submit', value = 'save')
 
-mixin teamMult(settings)
+mixin teamMult(settings, data)
     form#teamMForm(name = 'teamMForm', action='/servers/' + guild.id + '/teamM', method='POST')
         .row
             .col-1(style={'align-content': 'center'})
                     .container
                         h2 #{settings[0].term}
                         p.small Summary: #{settings[0].description}.
+                        p.small#currTeamEqual(style={'font-style': 'italic'}) Currently: #{data['Team Multipliers']['Equal']}
                         hr
                         label(for='equalTeam') Equal Team Multiplier:
                         input#equalTeam(name = 'equalTeam', type='number', input='equalTeam', min = '0', step = '0.1')
@@ -197,6 +218,7 @@ mixin teamMult(settings)
                     .container
                         h2 #{settings[1].term}
                         p.small Summary: #{settings[1].description}.
+                        p.small#currTeam1Higher(style={'font-style': 'italic'}) Currently: #{data['Team Multipliers']['One Higher']}
                         hr
                         label(for='oneHigherTeam') One Team Tier Higher:
                         input#oneHigherTeam(name = 'oneHigherTeam', type='number', input='oneHigherTeam', min = '0', step = '0.1')
@@ -204,6 +226,7 @@ mixin teamMult(settings)
                     .container
                         h2 #{settings[2].term}
                         p.small Summary: #{settings[2].description}.
+                        p.small#currTeam2Higher(style={'font-style': 'italic'}) Currently: #{data['Team Multipliers']['Two Higher']}
                         hr
                         label(for='twoHigherTeams') Two Team Tiers Higher:
                         input#twoHigherTeams(name = 'twoHigherTeams', type='number', input='twoHigherTeams', min = '0', step = '0.1')
@@ -211,6 +234,7 @@ mixin teamMult(settings)
                     .container
                         h2 #{settings[3].term}
                         p.small Summary: #{settings[3].description}.
+                        p.small#currTeam1Lower(style={'font-style': 'italic'}) Currently: #{data['Team Multipliers']['One Lower']}
                         hr
                         label(for='oneLowerTeam') One Team Tier Lower:
                         input#oneLowerTeam(name = 'oneLowerTeam', type='number', input='oneLowerTeam', min = '0', step = '0.1')
@@ -218,19 +242,26 @@ mixin teamMult(settings)
                     .container
                         h2 #{settings[4].term}
                         p.small Summary: #{settings[4].description}.
+                        p.small#currTeam2Lower(style={'font-style': 'italic'}) Currently: #{data['Team Multipliers']['Two Lower']}
                         hr
                         label(for='twoLowerTeams') Two Team Tiers Lower:
                         input#twoLowerTeams(name = 'twoLowerTeams', type='number', input='twoLowerTeams', min = '0', step = '0.1')
         input(type='submit', value = 'save')
 
-mixin icons(settings)
+mixin icons(settings, data)
    - var driveUrl = "https://drive.google.com/thumbnail\\?id=.*|https://drive.google.com/uc\\?export=download&id=.*|none"
     form#iconsForm(name = 'iconsForm', action='/servers/' + guild.id + '/icons', method='POST')  
+        -currVal
         .row
             .col-2
                 .container
                     h2 #{settings[0].term}
                     p.small Summary: #{settings[0].description}.
+                    if data['Matchmaking Icon'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Matchmaking Icon']
+                    p.small#currMatchmaking(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='matchIcon') Matchmaking Icon:
                     br
@@ -239,6 +270,11 @@ mixin icons(settings)
                 .container
                     h2 #{settings[1].term}
                     p.small Summary: #{settings[1].description}.
+                    if data['Boss Icon'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Boss Icon']
+                    p.small#currBoss(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='bossIcon') Boss Icon:
                     br
@@ -247,6 +283,11 @@ mixin icons(settings)
                 .container
                     h2 #{settings[2].term}
                     p.small Summary: #{settings[2].description}.
+                    if data['Boss Win'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Boss Win']
+                    p.small#currBossWin(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='bossWinIcon') Boss Win Icon:
                     br
@@ -255,6 +296,11 @@ mixin icons(settings)
                 .container
                     h2 #{settings[3].term}
                     p.small Summary: #{settings[3].description}.
+                    if data['Boss Lose'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Boss Lose']
+                    p.small#currBossLose(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='bossLossIcon') Boss Loss Icon:
                     br
@@ -263,6 +309,11 @@ mixin icons(settings)
                 .container
                     h2 #{settings[4].term}
                     p.small Summary: #{settings[4].description}.
+                    if data['Store 1 Icon'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Store 1 Icon']
+                    p.small#currStore1(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='store1Icon') Store 1 Icon:
                     br
@@ -271,6 +322,11 @@ mixin icons(settings)
                 .container
                     h2 #{settings[5].term}
                     p.small Summary: #{settings[5].description}.
+                    if data['Store 2 Icon'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Store 2 Icon']
+                    p.small#currStore2(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='store2Icon') Store 2 Icon:
                     br
@@ -279,6 +335,11 @@ mixin icons(settings)
                 .container
                     h2 #{settings[6].term}
                     p.small Summary: #{settings[6].description}.
+                    if data['Store 3 Icon'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Store 3 Icon']
+                    p.small#currStore3(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='store3Icon') Store 3 Icon:
                     br
@@ -287,11 +348,18 @@ mixin icons(settings)
                 .container
                     h2 #{settings[7].term}
                     p.small Summary: #{settings[7].description}.
+                    if data['Team Store Icon'] === 'https://drive.google.com/thumbnail?id='
+                        -currVal = 'None'
+                    else 
+                        -currVal = data['Team Store Icon']
+                    p.small#currTeamStore(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='teamStoreIcon') Team Store Icon:
                     br
                     input#teamStoreIcon.pb-2(name = 'teamStoreIcon', type='text', input='teamStoreIcon', pattern = driveUrl)
         input(type='submit', value = 'save')
+
+
 
 mixin generateTeamTable(allTeams)
     - var count = 0
@@ -323,8 +391,8 @@ mixin generateTeamTable(allTeams)
                                 button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
                                 a.button.btn.btn-primary(href='delete/'+ team['Team Name'], type='button') Confirm
 
+- var count = 0
 mixin generateStoreTable(store)
-    - var count = 0
     a#editStore.btn.btn-primary.me-2(href='/servers/' + guild.id + '/makeItem/'+ store['Name'], role='button') 
         i.fas.fa-plus New Item
     each item in store['Items']
@@ -347,9 +415,11 @@ mixin generateStoreTable(store)
                                 button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
                             .modal-body
                                 | Are you sure you want to delete item # 
-                                strong #{item['Number']}
+                                strong #{item['Number']} from 
+                                 strong #{store['Name']}
                             .modal-footer
                                 button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
                                 a.button.btn.btn-primary(href='delete/'+ store['Name'] + '/' + item['Number'], type='button') Confirm
-                
+    if store['Name'] === 'Team Store'
+        -count = 0            
                     

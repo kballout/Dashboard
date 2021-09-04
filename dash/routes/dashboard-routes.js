@@ -18,7 +18,7 @@ router.get('/dashboard', (req, res) => res.render('dashboard/index', {
 
 //choose server
 router.get('/servers/:id', validateGuild, async (req, res) => {
-    guildExists = await mongo.checkIfExists(req.params.id);
+    var guildExists = await mongo.checkIfExists(req.params.id);
     res.render('dashboard/show', {
         guildExists,
         categories,
@@ -28,16 +28,94 @@ router.get('/servers/:id', validateGuild, async (req, res) => {
 
 //general settings
 router.get('/servers/:id/general', validateGuild, async (req, res) => {
-    guildExists = await mongo.checkIfExists(req.params.id);
-    res.render('dashboard/modules/general', {
+    var guildExists = await mongo.checkIfExists(req.params.id);
+    if(!guildExists){
+        res.render('dashboard/modules/general', {
+            guildExists,
+            categories,
+    
+        })
+    }
+    else{
+        var data = await mongo.getAllGeneralData(req.params.id);
+        var conv1 = 'Off';
+        var conv2 = 'Off';
+        var conv3 = parseFloat(data['Exchange Rate']) * 100;
+            switch(data['Bonus Day']){
+                case '1':
+                    conv1 = 'Sunday';
+                    break;
+                case '2':
+                    conv1 = 'Monday';
+                    break;
+                case '3':
+                    conv1 = 'Tuesday';
+                    break;
+                case '4':
+                    conv1 = 'Wednesday';
+                    break;
+                case '5':
+                    conv1 = 'Thursday';
+                    break;
+                case '6':
+                    conv1 = 'Friday';
+                    break;
+                case '7':
+                    conv1 = 'Saturday';
+                    break;
+            }
+            
+            switch(data['Reset Challenges Time']){
+                case 10:
+                    conv2 = '10AM';
+                    break;
+                case 11:
+                    conv2 = '11AM';
+                    break;
+                case 12:
+                    conv2 = '12PM';
+                    break;
+                case 13:
+                    conv2 = '1PM';
+                    break;
+                case 14:
+                    conv2 = '2PM';
+                    break;
+                case 15:
+                    conv2 = '3PM';
+                    break;
+                case 16:
+                    conv2 = '4PM';
+                    break;
+            }
+
+        res.render('dashboard/modules/general', {
+            guildExists,
+            categories,
+            data,
+            conv1,
+            conv2,
+            conv3
+
+        })
+    }
+    
+})
+
+//moderation
+router.get('/servers/:id/moderation', validateGuild, async (req, res) => {
+    var guildExists = await mongo.checkIfExists(req.params.id);
+    res.render('dashboard/modules/moderation', {
         guildExists,
-        categories
     })
 })
 
+
+
+
 //lists all teams
 router.get('/servers/:id/management', validateGuild, async (req, res) => {
-    guildExists = await mongo.checkIfExists(req.params.id);
+    var guildExists = await mongo.checkIfExists(req.params.id);
     var allTeams = await mongo.getAllTeamData(req.params.id);
     res.render('dashboard/modules/management', {
         guildExists,
@@ -78,6 +156,10 @@ router.get('/servers/:id/delete/:teamName', validateGuild, async (req, res) => {
 	
 })
 
+
+
+
+
 //initialize activity
 router.get('/servers/:id/initialize', validateGuild, async (req, res) => {
         var guild = bot.guilds.cache.get(req.params.id);
@@ -92,13 +174,17 @@ router.get('/servers/:id/terminate', validateGuild, async (req, res) => {
     var guild = bot.guilds.cache.get(req.params.id);
     const channel = guild.channels.cache.filter(ch => ch.type === 'GUILD_TEXT' && ch.permissionsFor(guild.me).has('SEND_MESSAGES')).find(x => x.rawPosition === 0);
     channel.send('~terminate');
-    await sleep(8000);
+    await sleep(10000);
     res.redirect('/servers/' + req.params.id);
 })
 
+
+
+
+
 //get store lists
 router.get('/servers/:id/stores', validateGuild, async (req, res) => {
-    guildExists = await mongo.checkIfExists(req.params.id);
+    var guildExists = await mongo.checkIfExists(req.params.id);
     var allStores = await mongo.getAllStoresData(req.params.id);
     res.render('dashboard/modules/stores', {
         guildExists,
@@ -110,8 +196,7 @@ router.get('/servers/:id/stores', validateGuild, async (req, res) => {
 //get single item to edit
 router.get('/servers/:id/editStore/:storeNum/:itemNumber', validateGuild, async (req, res) => {
     var store = req.params.storeNum;
-    var search = await mongo.getItemData(req.params.id, store);
-    var item = search['Items']['Item ' + req.params.itemNumber];
+    var item = await mongo.getItemData(req.params.id, store, req.params.itemNumber);
     res.render('dashboard/modules/store/editStore', {
         item,
         store
@@ -119,25 +204,22 @@ router.get('/servers/:id/editStore/:storeNum/:itemNumber', validateGuild, async 
     
 })
 
-//create item
+//create item page
 router.get('/servers/:id/makeItem/:storeNum', validateGuild, async (req, res) => {
     var store = req.params.storeNum;
-    var search = await mongo.getItemData(req.params.id, store);
-    var item = Object.keys(search['Items']).length;
+    var item = await mongo.getStoreItemTotal(req.params.id, store);
     item++;
     res.render('dashboard/modules/store/makeItem', {
         item,
         store
-    })
-
-    
-    
+    }) 
 })
 
-//delete item
+//delete item 
 router.get('/servers/:id/delete/:storeNum/:itemNumber', validateGuild, async (req, res) => {
-    
+    await mongo.deleteItem(req.params.id, req.params.storeNum ,parseInt(req.params.itemNumber))
 
+    res.redirect('/servers/' + req.params.id + '/stores');
     
 })
 
@@ -173,6 +255,10 @@ router.post('/servers/:id/general', (req, res) => {
 })
 
 router.post('/servers/:id/time', (req, res) => {
+    var guild = bot.guilds.cache.get(req.params.id);
+    
+    const channel = guild.channels.cache.filter(ch => ch.name === 'bot-messages' && ch.type === 'GUILD_TEXT' && ch.permissionsFor(guild.me).has('SEND_MESSAGES')).first();
+    
     for (let [key, value] of Object.entries(req.body)) {
         if(key === 'offensesScheduleDay'){
             var conv1 = '-1';
@@ -199,6 +285,10 @@ router.post('/servers/:id/time', (req, res) => {
                     conv1 = '7';
                     break;
             }
+            if(value === 'off'){
+                value = -1;
+            }
+            channel.send('~changebonusday ' + value);
             mongo.changeBonusDaySchedule(req.params.id, conv1);
         }
         if(key === 'challengesScheduleTime'){
@@ -226,8 +316,10 @@ router.post('/servers/:id/time', (req, res) => {
                     conv2 = 16;
                     break;
             }
+            channel.send('~changedailyresettime ' + conv2);
             mongo.changeChallengesResetTime(req.params.id, conv2);
         }
+
         if(key === 'boostTimeLimit'){
             var conv3
             switch(value){
@@ -366,8 +458,11 @@ router.post('/servers/:id/icons', (req, res) => {
     res.redirect('back');
 })
 
+
+
+
+
 router.post('/servers/:id/edit/:teamName', (req, res) => {
-    console.log(req.body)
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'teamPoints'){
             mongo.updateTeamPoints(req.params.id, req.params.teamName, parseFloat(value));
@@ -403,29 +498,36 @@ router.post('/servers/:id/makeTeam', async (req, res) => {
        res.render('errors/teamError.pug');
    }
 })
- 
+
+
+
+
+//edit item 
 router.post('/servers/:id/editStore/:storeNum/:itemNum', (req, res) => {
-    var item = 'Item ' + req.params.itemNum;
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'itemName'){
-            mongo.updateItemName(req.params.id, req.params.storeNum, item, value);
+            mongo.updateItemName(req.params.id, req.params.storeNum, req.params.itemNum, value);
         }
         if(key === 'itemQuantity'){
-            mongo.updateItemQuantity(req.params.id, req.params.storeNum, item, value);
+            mongo.updateItemQuantity(req.params.id, req.params.storeNum, req.params.itemNum, parseInt(value));
         }
         if(key === 'itemCost'){
-
+            mongo.updateItemCost(req.params.id, req.params.storeNum, req.params.itemNum, parseFloat(value));
         }
         if(key === 'available'){
-
+            mongo.updateItemAvailable(req.params.id, req.params.storeNum, req.params.itemNum, value);
         }
         
     }
     res.redirect('/servers/' + req.params.id + '/stores');
 })
-
+//create item function
 router.post('/servers/:id/makeItem/:storeNum/:itemNum', async (req, res) => {
-    console.log(req.body);
+    await mongo.createNewItem(req.params.id, req.params.storeNum, req.params.itemNum, 
+    req.body['itemName'], 
+    parseInt(req.body['itemQuantity']), 
+    parseFloat(req.body['itemCost']), 
+    req.body['available']);
     
     res.redirect('/servers/' + req.params.id + '/stores');
 })

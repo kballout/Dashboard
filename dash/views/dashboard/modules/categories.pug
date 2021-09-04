@@ -6,14 +6,14 @@
                     | General Settings
             #collapse1.accordion-collapse.collapse.show(aria-labelledby='heading1')
                 .accordion-body
-                    +general(categories[0].settings)
+                    +general(categories[0].settings, data, conv3)
         .accordion-item
             h2#heading2.accordion-header
                 button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse2', aria-expanded='true', aria-controls='collapse2')
                     | Scheduler
             #collapse2.accordion-collapse.collapse.show(aria-labelledby='heading2')
                 .accordion-body
-                    +time(categories[1].settings)
+                    +time(categories[1].settings, data, conv1, conv2)
         .accordion-item
             h2#heading3.accordion-header
                 button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse3', aria-expanded='true', aria-controls='collapse3')
@@ -29,18 +29,18 @@
                             button#pills-team-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-team', type='button', role='tab', aria-controls='pills-team', aria-selected='false') Team 
                     #pills-tabContent.tab-content
                         #pills-rank.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-rank-tab')
-                            +rankMult(categories[2].settings)
+                            +rankMult(categories[2].settings, data)
                         #pills-tier.tab-pane.fade(role='tabpanel', aria-labelledby='pills-tier-tab')
-                            +tierMult(categories[3].settings)
+                            +tierMult(categories[3].settings, data)
                         #pills-team.tab-pane.fade(role='tabpanel', aria-labelledby='pills-team-tab')
-                            +teamMult(categories[4].settings)          
+                            +teamMult(categories[4].settings, data)          
         .accordion-item
             h2#heading4.accordion-header
                 button.accordion-button(type='button', data-bs-toggle='collapse', data-bs-target='#collapse4', aria-expanded='true', aria-controls='collapse4')
                     | Icons
             #collapse4.accordion-collapse.collapse.show(aria-labelledby='heading4')
                 .accordion-body
-                    +icons(categories[5].settings)  
+                    +icons(categories[5].settings, data)  
 
 
     

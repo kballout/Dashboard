@@ -1,4 +1,8 @@
 section#overviewModule.module.px-5
+  #notify.alert.alert-success.alert-dismissible.d-flex.align-items-center(role='alert')
+    div
+      | Processing command in the discord server...
+      button.btn-close(type='button', aria-label='Close')
   h3.text-center #{guild.name}
   h4.text-center Overview
     .form-group.mt-5.text-center
@@ -29,7 +33,7 @@ section#overviewModule.module.px-5
           h4 Initialization
           p(style={'font-size': 'smaller'}) Initialize the activity to add all channels and roles related to the guild master. The bot must be initialized in order to change settings. 
           hr
-          a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/initialize', role='button') Initialize
+          a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/initialize', role='button',) Initialize
     else 
       .col-9#initBox
         .container
@@ -50,5 +54,5 @@ section#overviewModule.module.px-5
                   | Are you sure you want to terminate the activity? Once this is done all roles and channels associated with guild master will be deleted as well as all player information.
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                  a.button.btn.btn-primary(href='/servers/' + guild.id + '/terminate', role='button', type='button') Confirm
+                  a.button.btn.btn-primary(href='/servers/' + guild.id + '/terminate', role='button', type='button', id = 'terminateBtn') Confirm
 

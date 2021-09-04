@@ -29,6 +29,14 @@ html(lang="en")
 
         include ../../includes/navbar.pug
 
-        include settings.pug
-        
+        section#mainContent
+            h1.display-5.text-center Moderation
+            p.lead.text-center Modify your server's moderation.
+            hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
+            if !guildExists
+                h3.text-center(style={'font-style': 'italic', color: 'red'}) Please initiate the server before attempting to change settings.
+            else
+                .container
+                    
+                    
         

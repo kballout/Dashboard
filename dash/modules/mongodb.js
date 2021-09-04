@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+var {Double} = require("mongodb");
 const config = require('../../config.json');
 let database; //global
 
@@ -22,13 +23,23 @@ class DB {
         let doc = database.collection("Initialize");
         let fieldName = "Started";
         let value = await doc.distinct(fieldName);
-        if(value[0] == true){
+        if(value[0] === true){
             return true;
         }
         return false;
     }
 
+
+
     //GENERAL
+    async getAllGeneralData(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var query = {Name: "General Settings"};
+        return await doc.findOne(query);   
+    }
+
     async changeExchangeRate(dbName, rate){
         let client = this.#connect();
         database = (await client).db(dbName);
@@ -368,6 +379,8 @@ class DB {
         
     }
 
+
+
     //TEAMS
     async getAllTeamData(dbName){
         let client = this.#connect();
@@ -385,10 +398,8 @@ class DB {
         let client = this.#connect();
         database = (await client).db(dbName);
         let doc = database.collection("Teams");
-        var teamData = [];
         var query = {Name: teamName};
-        teamData = await doc.findOne(query);
-         return teamData;
+        return await doc.findOne(query);
     }
 
     async updateTeamPoints(dbName, teamName, points){
@@ -426,6 +437,9 @@ class DB {
         return await doc.findOne(filter);
     }
 
+
+
+    //STORES
     async getAllStoresData(dbName){
         let client = this.#connect();
         database = (await client).db(dbName);
@@ -438,30 +452,31 @@ class DB {
        return allStores;       
     }
 
-    async getItemData(dbName, store){
+    async getStoreItemTotal(dbName, store){
         let client = this.#connect();
         database = (await client).db(dbName);
         let doc = database.collection("Stores");
-        let filter = {Name:store, Items: Object};
-        return await doc.findOne(filter);
-    }
-    
-    //STORES
-    async updateItemName(dbName, store, item, name){
-        let client = this.#connect();
-        database = (await client).db(dbName);
-        let doc = database.collection("Stores");
-        var search = 'Items.' + item + '.Name';
         let filter = {Name: store};
-        let update = {$set:{[search]: name}};
-        await doc.updateOne(filter, update);
+        let res = await doc.findOne(filter);
+        return Object.keys(res['Items']).length;
     }
 
+    async getItemData(dbName, store, itemNumber){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        var search = 'Items.' + 'Item ' + itemNumber;
+        return await doc.distinct(search , {Name:store});
+    }
+    
+
+
+    //UPDATES
     async updateItemName(dbName, store, item, name){
         let client = this.#connect();
         database = (await client).db(dbName);
         let doc = database.collection("Stores");
-        var search = 'Items.' + item + '.Name';
+        var search = 'Items.' + 'Item ' + item + '.Name';
         let filter = {Name: store};
         let update = {$set:{[search]: name}};
         await doc.updateOne(filter, update);
@@ -471,7 +486,7 @@ class DB {
         let client = this.#connect();
         database = (await client).db(dbName);
         let doc = database.collection("Stores");
-        var search = 'Items.' + item + '.Qty';
+        var search = 'Items.' + 'Item ' + item + '.Qty';
         let filter = {Name: store};
         let update = {$set:{[search]: qty}};
         await doc.updateOne(filter, update);
@@ -481,12 +496,97 @@ class DB {
         let client = this.#connect();
         database = (await client).db(dbName);
         let doc = database.collection("Stores");
-        var search = 'Items.' + item + '.Cost';
+        var search = 'Items.' + 'Item ' + item + '.Cost';
         let filter = {Name: store};
-        let update = {$set:{[search]: cost}};
+        let update = {$set:{[search]: Double(cost)}};
         await doc.updateOne(filter, update);
     }
 
+    async updateItemNumber(dbName, store, item, number){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        var search = 'Items.' + 'Item ' + item + '.Number';
+        let filter = {Name: store};
+        let update = {$set:{[search]: number}};
+        await doc.updateOne(filter, update);
+    }
+
+    async updateItemAvailable(dbName, store, item, available){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        var search = 'Items.' + 'Item ' + item + '.Available';
+        let filter = {Name: store};
+        let update = {$set:{[search]: this.parseBool(available)}};
+        await doc.updateOne(filter, update);
+    }
+
+    async createNewItem(dbName, store, itemNumber, itemName, itemQuantity, itemCost, itemAvailable){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        var location = 'Items.' + 'Item ' + itemNumber;
+        var newItem = {
+            $set:{
+                [location]:{
+                    Number: parseInt(itemNumber),
+                    Name: itemName,
+                    Qty: itemQuantity,
+                    Cost: Double(itemCost),
+                    Available: this.parseBool(itemAvailable)
+                }
+            }
+        }
+        let filter = {Name: store};
+        await doc.updateOne(filter, newItem, {upsert: true})
+    }
+
+    async deleteItem(dbName, store, itemNumber){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+
+        //Inital Delete item entry
+        var location = 'Items.' + 'Item ' + itemNumber;
+        var removeItem = {$unset:{[location]: {}}};
+        let filter = {Name: store};
+        await doc.updateOne(filter, removeItem);
+        
+        //get total items currently
+        var total = await this.getStoreItemTotal(dbName, store);
+        total++;
+        //Update new store
+        var nextLocation, nextRemove;
+        for(var i  = itemNumber; i < total; i++){
+            this.updateItemNumber(dbName, store, 1 + i, i);
+            var data = await this.getItemData(dbName,store, 1 + i);
+            this.createNewItem(dbName, store, i, 
+                data[0]['Name'], 
+                parseInt(data[0]['Qty']), 
+                parseFloat(data[0]['Cost']), 
+                this.parseBool(data[0]['Available'])
+                )
+            //Delete old item
+            nextLocation = 'Items.' + 'Item ' + (1 + i);
+            nextRemove = {$unset:{[nextLocation]: {}}};
+            await doc.updateOne(filter, nextRemove);
+        }
+    }
+
+
+
+
+
+
+
+
+    parseBool(val) { 
+        if(val === 'true'){
+            return true;
+        }
+        return false;
+      }
     
     async closeConnection(){
         await client.close();
