@@ -79,14 +79,27 @@ class DB {
         
     }
 
-    async changeBonusAmount(dbName, num){
+    async changeBonusAmount(dbName, num, choice){
         let client = this.#connect();
         database = (await client).db(dbName);
         let doc = database.collection("Guild Settings");
-        let fieldName = "Bonus Amount";
+        let fieldName;
+        if(choice === 'Offenses Bonus'){
+            fieldName = 'Offenses Bonus'
+        }
+        else if(choice === 'Exchange Bonus'){
+            fieldName = 'Exchange Bonus'
+        }
+        else if(choice === 'Points Bonus'){
+            fieldName = 'Point Bonus'
+        }
+        else{
+            fieldName = 'Streak Bonus'
+        }
+        
         let value = await doc.distinct(fieldName);
-        doc.findOneAndUpdate({['Bonus Amount']: value[0] },
-        {$set:{'Bonus Amount': num}}, function(err, res){
+        doc.findOneAndUpdate({[fieldName]: value[0] },
+        {$set:{[fieldName]: num}}, function(err, res){
             if (err) throw err;
         });
         
@@ -134,11 +147,12 @@ class DB {
     async changeBonusDaySchedule(dbName, num){
         let client = this.#connect();
         database = (await client).db(dbName);
+        num = this.parseBool(num);
         let doc = database.collection("Guild Settings");
-        let fieldName = "Bonus Day";
+        let fieldName = "Automatic Monthly Bonus";
         let value = await doc.distinct(fieldName);
-        doc.findOneAndUpdate({['Bonus Day']: value[0] },
-        {$set:{'Bonus Day': num}}, function(err, res){
+        doc.findOneAndUpdate({['Automatic Monthly Bonus']: value[0] },
+        {$set:{'Automatic Monthly Bonus': num}}, function(err, res){
             if (err) throw err;
         });
         
@@ -379,6 +393,31 @@ class DB {
         
     }
 
+    async getBadWordsList(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        let fieldName = "Bad Words List.words";
+        return await doc.distinct(fieldName);
+        
+    }
+
+    async setBadWordsList(dbName, words){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        let fieldName = "Bad Words List";
+        let filter = {'Name': 'General Settings'};
+        var removeItem = {$unset:{[fieldName]: {}}};
+        await doc.updateOne(filter, removeItem);
+        let newItem = { $set: {[fieldName]:{
+           words
+        }}}
+        await doc.updateOne(filter, newItem, {upsert: true})
+
+        
+    }
+
 
 
     //TEAMS
@@ -471,7 +510,7 @@ class DB {
     
 
 
-    //UPDATES
+    //UPDATES STORE
     async updateItemName(dbName, store, item, name){
         let client = this.#connect();
         database = (await client).db(dbName);
@@ -575,6 +614,14 @@ class DB {
     }
 
 
+    //PROGRAMS
+    async getAllProgramData(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var query = {Name: "Program IDs"};
+        return await doc.findOne(query);   
+    }
 
 
 

@@ -42,13 +42,13 @@ section#overviewModule.module.px-5
           h4 Initialization
           p(style={'font-size': 'smaller'}) Terminate the activity to remove all channels and roles related to the guild master. 
           hr
-          button.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#exampleModal')
+          button.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#endModal')
             | Terminate
-          #exampleModal.modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true')
+          #endModal.modal.fade(tabindex='-1', aria-labelledby='endModalLabel', aria-hidden='true')
             .modal-dialog(style={color: 'black'})
               .modal-content
                 .modal-header
-                  h5#exampleModalLabel.modal-title Terminate Activity
+                  h5#endModalLabel.modal-title Terminate Activity
                   button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
                 .modal-body.small
                   | Are you sure you want to terminate the activity? Once this is done all roles and channels associated with guild master will be deleted as well as all player information.

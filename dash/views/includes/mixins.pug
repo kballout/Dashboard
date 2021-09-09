@@ -29,10 +29,34 @@ mixin general(settings, data, conv3)
                 .container
                     h2 #{settings[3].term}
                     p.small Summary: #{settings[3].description}.
-                    p.small#currBonusAmount(style={'font-style': 'italic'}) Currently: #{data['Bonus Amount']}
+                    p.small#currOffensesBonus(style={'font-style': 'italic'}) Currently: #{data['Offenses Bonus']}
                     hr
-                    label(for='bonusAmount') Bonus Amount:
-                    input#bonusAmount(name = 'bonusAmount', type='number', input='bonusAmount', min = '0', step = 0.1)    
+                    label(for='offensesBonus') Bonus Amount:
+                    input#offensesBonus(name = 'offensesBonus', type='number', input='offensesBonus', min = '0', step = 0.1)
+            .col-2
+                .container
+                    h2 #{settings[7].term}
+                    p.small Summary: #{settings[7].description}.
+                    p.small#currExchangeBonus(style={'font-style': 'italic'}) Currently: #{data['Exchange Bonus']}
+                    hr
+                    label(for='exchangeBonus') Bonus Amount:
+                    input#exchangeBonus(name = 'exchangeBonus', type='number', input='exchangeBonus', min = '0', step = 0.1)
+            .col-2
+                .container
+                    h2 #{settings[8].term}
+                    p.small Summary: #{settings[8].description}.
+                    p.small#currPointsBonus(style={'font-style': 'italic'}) Currently: #{data['Points Bonus']}
+                    hr
+                    label(for='pointsBonus') Bonus Amount:
+                    input#pointsBonus(name = 'pointsBonus', type='number', input='pointsBonus', min = '0', step = 0.1)  
+            .col-2
+                .container
+                    h2 #{settings[9].term}
+                    p.small Summary: #{settings[9].description}.
+                    p.small#currStreakBonus(style={'font-style': 'italic'}) Currently: #{data['Streak Bonus']}
+                    hr
+                    label(for='streakBonus') Bonus Amount:
+                    input#streakBonus(name = 'streakBonus', type='number', input='streakBonus', min = '0', step = 0.1)        
             .col-2
                 .container
                     h2 #{settings[4].term}
@@ -66,19 +90,13 @@ mixin time(settings, data, conv1, conv2)
                 .container
                     h2 #{settings[0].term}
                     p.small Summary: #{settings[0].description}.
-                    p.small#currDay(style={'font-style': 'italic'}) Currently: #{conv1}
+                    p.small#currAutoMonth(style={'font-style': 'italic'}) Currently: #{conv1}
                     hr  
-                    label(for='day') Choose a day:
-                        select#day
+                    label(for='autoMonth') Choose an option:
+                        select#autoMonth
                             option(value='none') -
-                            option(value='off') Off
-                            option(value='sunday') Sunday
-                            option(value='monday') Monday
-                            option(value='tuesday') Tuesday
-                            option(value='wednesday') Wednesday
-                            option(value='thursday') Thursday
-                            option(value='friday') Friday
-                            option(value='saturday') Saturday
+                            option(value='false') false
+                            option(value='true') true
             .col-2
                 .container
                     h2 #{settings[1].term}
@@ -422,4 +440,37 @@ mixin generateStoreTable(store)
                                 a.button.btn.btn-primary(href='delete/'+ store['Name'] + '/' + item['Number'], type='button') Confirm
     if store['Name'] === 'Team Store'
         -count = 0            
-                    
+
+
+                  
+mixin generateProgramTable(programs)
+    - var count = 0
+    each program in programs['Programs']
+        -count++
+        tr 
+            th(scope='row') #{count}
+            td #{program['Name']} 
+            td #{program['Factor']}
+            if program['Bonus Type'] === 0
+                td No Bonus
+            else if program['Bonus Type'] === 1
+                td Full Attendance Bonus
+            else 
+                td Partial Attendance Bonus
+            td #{program['Bonus Amount']}
+            td.text-center
+                a.btn.btn-primary.me-2(href='editprogram/'+ count, role='button') Edit
+                button.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target= '#modal' + count)
+                    | Delete
+                .modal.fade(id = 'modal' + count ,tabindex='-1', aria-labelledby = '#modalLabel' + count, aria-hidden='true')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5(id = 'modalLabel' + count).modal-title Delete Team
+                                button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                            .modal-body
+                                | Are you sure you want to delete the 
+                                strong #{program['Name']} Program?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                a.button.btn.btn-primary(href='delete/'+ count, type='button') Confirm

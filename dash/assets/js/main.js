@@ -5,6 +5,7 @@ $(function () {
 
 
 $("#terminateBtn").click(function(){
+  $('#endModal').modal('hide')   
     toggleSuccess();
 })
 

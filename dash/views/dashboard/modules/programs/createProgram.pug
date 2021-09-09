@@ -5,7 +5,7 @@ html(lang="en")
         include ../../../includes/mixins
         script(src='/js/sidebar.js', defer)
         
-        script(src='/js/management.js', defer)
+
         link(rel='stylesheet', href='/css/sidebar.css')
         link(rel='stylesheet', href='/css/index.css')
         link(rel='stylesheet', href='/css/management.css')
@@ -35,23 +35,23 @@ html(lang="en")
         include ../../../includes/navbar.pug
 
         section#mainContent
-            h1.display-5.text-center Team Settings
-            p.lead.text-center Manage the teams on your server.
+            h1.display-5.text-center Programs
+            p.lead.text-center Create or edit programs for your server.
             hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
             if !guildExists
                 h3.text-center(style={'font-style': 'italic', color: 'red'}) Please use the ~initiate command before attempting to change settings
             else
-                h2#teamTitle Create New Team
-                form#createTeamForm(name = 'createTeamForm', action='/servers/' + guild.id + '/makeTeam', method = 'post')  
+                h2#teamTitle Create New Program
+                form#createProgramForm(name = 'createProgramForm', action='/servers/' + guild.id + '/makeProgram', method = 'post')  
                     .row
                         .col-4
                             .container
-                                h4 Team Name
-                                p Summary: enter the team's name. This must be a name that is currently not in use.
+                                h4 Program Name
+                                p Summary: enter a program name. This must be a name that is currently not in use.
                                 hr
-                                label(for='teamName') Team Name:
-                                input#teamName.pb-2(name = 'teamName', type='text', input='teamName', required)
-                                a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/management', role='button') Cancel
+                                label(for='programName') Program Name:
+                                input#programName.pb-2(name = 'programName', type='text', input='programName', required)
+                                a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/programs', role='button') Cancel
                                 input(type = 'submit', value = 'Save').btn.btn-primary.mt-3
         
         

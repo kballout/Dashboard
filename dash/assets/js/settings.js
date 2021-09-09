@@ -22,7 +22,10 @@ $(document).ready(function () {
             document.getElementById("exchange").value = '';
             document.getElementById("maxOffenses").value = '';
             document.getElementById("dailyChallenges").value = '';
-            document.getElementById("bonusAmount").value = '';
+            document.getElementById("offensesBonus").value = '';
+            document.getElementById("exchangeBonus").value = '';
+            document.getElementById("pointsBonus").value = '';
+            document.getElementById("streakBonus").value = '';
             document.getElementById("level1Buyer").value = '';
             document.getElementById("level2Buyer").value = '';
             document.getElementById("level3Buyer").value = '';
@@ -170,9 +173,21 @@ function isGeneralAllEmpty(){
         data['dailyChallenges'] = document.getElementById("dailyChallenges").value;
         document.getElementById('currDailyChallenges').innerHTML = 'Currently: ' + document.getElementById("dailyChallenges").value;
     }
-    if ($('#bonusAmount').val().length !== 0){
-        data['bonusAmount'] = document.getElementById("bonusAmount").value;
-        document.getElementById('currBonusAmount').innerHTML = 'Currently: ' + document.getElementById("bonusAmount").value;
+    if ($('#offensesBonus').val().length !== 0){
+        data['offensesBonus'] = document.getElementById("offensesBonus").value;
+        document.getElementById('currOffensesBonus').innerHTML = 'Currently: ' + document.getElementById("offensesBonus").value;
+    }
+    if ($('#exchangeBonus').val().length !== 0){
+        data['exchangeBonus'] = document.getElementById("exchangeBonus").value;
+        document.getElementById('currExchangeBonus').innerHTML = 'Currently: ' + document.getElementById("exchangeBonus").value;
+    }
+    if ($('#pointsBonus').val().length !== 0){
+        data['pointsBonus'] = document.getElementById("pointsBonus").value;
+        document.getElementById('currPointsBonus').innerHTML = 'Currently: ' + document.getElementById("pointsBonus").value;
+    }
+    if ($('#streakBonus').val().length !== 0){
+        data['streakBonus'] = document.getElementById("streakBonus").value;
+        document.getElementById('currStreakBonus').innerHTML = 'Currently: ' + document.getElementById("streakBonus").value;
     }
     if ($('#level1Buyer').val().length !== 0){
         data['level1Buyer'] = document.getElementById("level1Buyer").value;
@@ -191,9 +206,9 @@ function isGeneralAllEmpty(){
 
 function isTimeAllEmpty(){
     var data = {};
-    if (document.getElementById('day').value !== 'none'){
-        data['offensesScheduleDay'] = document.getElementById('day').value;
-        document.getElementById('currDay').innerHTML = 'Currently: ' + document.getElementById("day").value;
+    if (document.getElementById('autoMonth').value !== 'none'){
+        data['automaticMonthlyBonus'] = document.getElementById('autoMonth').value;
+        document.getElementById('currAutoMonth').innerHTML = 'Currently: ' + document.getElementById("autoMonth").value;
     }
     if (document.getElementById('time').value !== 'none'){
         data['challengesScheduleTime'] = document.getElementById('time').value;

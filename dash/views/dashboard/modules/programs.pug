@@ -2,9 +2,11 @@ doctype html
 html(lang="en")
     head
         include ../../includes/header.pug
+        include ../../includes/mixins
         script(src='/js/sidebar.js', defer)
         script(src='/js/guild.js', defer)
         link(rel='stylesheet', href='/css/sidebar.css')
+        link(rel='stylesheet', href='/css/stores.css')
         link(rel='stylesheet', href='/css/index.css')
         
     body 
@@ -30,6 +32,27 @@ html(lang="en")
 
         include ../../includes/navbar.pug
 
-        include settings.pug
-        
+        section#mainContent
+            h1.display-5.text-center Programs
+            p.lead.text-center Create or edit programs for your server.
+            hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
+            if !guildExists
+                h3.text-center(style={'font-style': 'italic', color: 'red'}) Please initiate the server before attempting to change settings.
+            else
+                .container
+                    a.btn.btn-primary(href='createprogram/', role='button') 
+                        i.fas.fa-plus Create New
+                    table.table.table-hover
+                        thead
+                            tr
+                                th(scope='col') #
+                                th(scope='col') Program Name
+                                th(scope='col') Factor
+                                th(scope='col') Bonus Type
+                                th.col-3(scope='col') Bonus Amount
+                                th.text-center(scope='col') Actions
+                        tbody 
+                            +generateProgramTable(programs)
+                    
+                    
         

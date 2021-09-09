@@ -41,27 +41,12 @@ router.get('/servers/:id/general', validateGuild, async (req, res) => {
         var conv1 = 'Off';
         var conv2 = 'Off';
         var conv3 = parseFloat(data['Exchange Rate']) * 100;
-            switch(data['Bonus Day']){
-                case '1':
-                    conv1 = 'Sunday';
+            switch(data['Automatic Monthly Bonus']){
+                case true:
+                    conv1 = 'true';
                     break;
-                case '2':
-                    conv1 = 'Monday';
-                    break;
-                case '3':
-                    conv1 = 'Tuesday';
-                    break;
-                case '4':
-                    conv1 = 'Wednesday';
-                    break;
-                case '5':
-                    conv1 = 'Thursday';
-                    break;
-                case '6':
-                    conv1 = 'Friday';
-                    break;
-                case '7':
-                    conv1 = 'Saturday';
+                case false:
+                    conv1 = 'false';
                     break;
             }
             
@@ -104,9 +89,11 @@ router.get('/servers/:id/general', validateGuild, async (req, res) => {
 
 //moderation
 router.get('/servers/:id/moderation', validateGuild, async (req, res) => {
-    var guildExists = await mongo.checkIfExists(req.params.id);
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let badWordsList = await mongo.getBadWordsList(req.params.id);
     res.render('dashboard/modules/moderation', {
         guildExists,
+        badWordsList
     })
 })
 
@@ -133,9 +120,11 @@ router.get('/servers/:id/edit/:teamName', validateGuild, async (req, res) => {
 
 //create a team
 router.get('/servers/:id/makeTeam', validateGuild, async (req, res) => {
+    var guildExists = await mongo.checkIfExists(req.params.id);
     var allTeams = await mongo.getAllTeamData(req.params.id);
     res.render('dashboard/modules/team/createTeam', {
         allTeams,
+        guildExists
     })
 	
 })
@@ -224,6 +213,30 @@ router.get('/servers/:id/delete/:storeNum/:itemNumber', validateGuild, async (re
 })
 
 
+//programs
+router.get('/servers/:id/programs', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let programs = await mongo.getAllProgramData(req.params.id);
+    console.log(programs);
+    res.render('dashboard/modules/programs', {
+        guildExists,
+        programs
+    })
+    
+})
+
+//create program
+router.get('/servers/:id/createprogram', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let programs = await mongo.getAllProgramData(req.params.id);
+    console.log(programs);
+    res.render('dashboard/modules/programs/createprogram', {
+        guildExists,
+        programs
+    })
+    
+})
+
 
 //POST requests
 router.post('/servers/:id/general', (req, res) => {
@@ -237,8 +250,17 @@ router.post('/servers/:id/general', (req, res) => {
         if(key === 'dailyChallenges'){
             mongo.changeDailyChallenges(req.params.id, parseInt(value));
         }
-        if(key === 'bonusAmount'){
-            mongo.changeBonusAmount(req.params.id, parseFloat(value));
+        if(key === 'offensesBonus'){
+            mongo.changeBonusAmount(req.params.id, parseFloat(value), 'Offenses Bonus');
+        }
+        if(key === 'exchangeBonus'){
+            mongo.changeBonusAmount(req.params.id, parseFloat(value), 'Exchange Bonus');
+        }
+        if(key === 'pointsBonus'){
+            mongo.changeBonusAmount(req.params.id, parseFloat(value), 'Points Bonus');
+        }
+        if(key === 'streakBonus'){
+            mongo.changeBonusAmount(req.params.id, parseFloat(value), 'Streak Bonus');
         }
         if(key === 'level1Buyer'){
             mongo.changeLevel1Buyer(req.params.id, parseInt(value));
@@ -260,35 +282,15 @@ router.post('/servers/:id/time', (req, res) => {
     const channel = guild.channels.cache.filter(ch => ch.name === 'bot-messages' && ch.type === 'GUILD_TEXT' && ch.permissionsFor(guild.me).has('SEND_MESSAGES')).first();
     
     for (let [key, value] of Object.entries(req.body)) {
-        if(key === 'offensesScheduleDay'){
-            var conv1 = '-1';
-            switch(value){
-                case 'sunday':
-                    conv1 = '1';
-                    break;
-                case 'monday':
-                    conv1 = '2';
-                    break;
-                case 'tuesday':
-                    conv1 = '3';
-                    break;
-                case 'wednesday':
-                    conv1 = '4';
-                    break;
-                case 'thursday':
-                    conv1 = '5';
-                    break;
-                case 'friday':
-                    conv1 = '6';
-                    break;
-                case 'saturday':
-                    conv1 = '7';
-                    break;
+        if(key === 'automaticMonthlyBonus'){
+            let conv1 = value;
+            let result;
+            if(conv1 === true){
+                result = 'on';
             }
-            if(value === 'off'){
-                value = -1;
+            else{
+                result = 'off';
             }
-            channel.send('~changebonusday ' + value);
             mongo.changeBonusDaySchedule(req.params.id, conv1);
         }
         if(key === 'challengesScheduleTime'){
@@ -456,6 +458,23 @@ router.post('/servers/:id/icons', (req, res) => {
     }
     
     res.redirect('back');
+})
+
+
+//words
+router.post('/servers/:id/words', (req, res) => {
+    
+    let str = JSON.stringify(req.body['textArea']).replace(/^"|"$/g, '').split(',');
+    str = str.filter(function(stri) {
+        return /\S/.test(stri);
+    });
+    let data = {};
+    for(var i = 0; i < str.length; i++){
+        data[i] = str[i];
+    }
+    mongo.setBadWordsList(req.params.id, data);
+    
+    res.redirect('/servers/' + req.params.id);
 })
 
 

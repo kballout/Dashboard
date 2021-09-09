@@ -14,8 +14,8 @@ const cat1 =
             description: 'Change the maximum number of challenges a player can battle'
         },
         {
-            term: 'Bonus amount',
-            description: 'Change the amount of bonus points a player recieves after the offenses are reset'
+            term: 'Offenses Bonus',
+            description: 'Change the amount of bonus points a player recieves for having 0 offenses when the bonus command is sent'
         },
         {
             term: 'Level 1 buyer',
@@ -29,14 +29,26 @@ const cat1 =
             term: 'Level 3 buyer',
             description: 'Change the level a player must reach to gain access to store 3'
         },
+        {
+            term: 'Exchange Bonus',
+            description: 'Change the amount of bonus points a player recieves for being among the top exchangers when the bonus command is sent'
+        },
+        {
+            term: 'Points Bonus',
+            description: 'Change the amount of bonus points a player recieves for being among the top point collectors when the bonus command is sent'
+        },
+        {
+            term: 'Streak Bonus',
+            description: 'Change the amount of bonus points a player recieves for maintaining streaks for programs when the bonus command is sent'
+        },
 
     ]};
   const cat2 =  {
       name: 'Time settings', 
       icon: 'fas fa-gavel', 
         settings: [{
-            term: 'Reset offenses schedule',
-            description: 'Change the day to automatically schedule a reset offenses command'
+            term: 'Automatic Monthly Bonus',
+            description: 'Change this setting to allow automatic monthly bonuses in your server'
         },
         {
             term: 'Reset challenges schedule',

@@ -16,7 +16,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
 
-app.use(rateLimit);
+
 app.use(express.urlencoded({extended: true})); 
 app.use(methodOverride('_method'));
 app.use(cookies.express('a', 'b', 'c'));
