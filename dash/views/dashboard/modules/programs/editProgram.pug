@@ -43,42 +43,47 @@ html(lang="en")
                 h3.text-center(style={'font-style': 'italic', color: 'red'}) Please use the ~initiate command before attempting to change settings
             else
                 .container(style={'background-color' : 'rgb(3, 5, 15)'})
-                    h2.text-center Create New Program
-                    p.lead.text-center Program ##{total}
-                    form#createProgramForm(name = 'createProgramForm', action='/servers/' + guild.id + '/createProgram/' + total, method = 'post')  
+                    h2.text-center Edit Program ##{num}
+                    p.lead.text-center #{program[0]['Name']}
+                    form#editProgramForm(name = 'editProgramForm', action='/servers/' + guild.id + '/editProgram/' + num, method = 'POST')  
                         .row
-                            .col-4
-                                .container
-                                    h4 Program Name
-                                    p.small Summary: enter a program name. This must be a name that is currently not in use.
-                                    hr
-                                    label(for='programName') Program Name:
-                                    input#programName.pb-2(name = 'programName', type='text', input='programName', required)
                             .col-4
                                 .container
                                     h4 Program Factor
                                     p.small Summary: This is the factor that is multiplied by the base points given as well as the player's current streak for attending this program.
+                                    p#currItem Currently: #{program[0]['Factor']}
                                     hr
                                     label(for='programFactor') Program Factor:
-                                    input#programFactor.pb-2(name = 'programFactor', type='number', input='programFactor', required, step = 0.1)
+                                    input#programFactor.pb-2(name = 'programFactor', type='number', input='programFactor', step = 0.1)
                             .col-4
                                 .container
                                     h4 Program Bonus Type
                                     p.small Summary: This identifies the type of bonus given for the program when the give bonuses command is used or the automatic monthly bonuses is triggered.
+                                    p#currItem Currently: #{program[0]['Bonus Type']}
                                     hr
                                     input#programBonusType(name = 'programBonusType', hidden, value = '')
                                     label(for='programBonusT') Program Bonus Type:
                                         select#programBonusT
-                                            option(value='noBonus') no bonus 
-                                            option(value='fullAttendance') full attendance bonus 
-                                            option(value='partialAttendance') partial attendance bonus
+                                            if program[0]['Bonus Type'] === 0
+                                                option(value='noBonus') no bonus 
+                                                option(value='fullAttendance') full attendance bonus 
+                                                option(value='partialAttendance') partial attendance bonus
+                                            else if program[0]['Bonus Type'] === 1
+                                                option(value='fullAttendance') full attendance bonus 
+                                                option(value='noBonus') no bonus 
+                                                option(value='partialAttendance') partial attendance bonus
+                                            else 
+                                                option(value='partialAttendance') partial attendance bonus
+                                                option(value='noBonus') no bonus 
+                                                option(value='fullAttendance') full attendance bonus 
                             .col-4
                                 .container
                                     h4 Program Bonus Amount
                                     p.small Summary: This bonus amount is used when the give bonuses command is used or the automatic monthly bonuses is triggered.
+                                    p#currItem Currently: #{program[0]['Bonus Amount']}
                                     hr
                                     label(for='programBonusAmount') Program Bonus Amount:
-                                    input#programBonusAmount.pb-2(name = 'programBonusAmount', type='number', input='programBonusAmount', required, step = 0.1)
+                                    input#programBonusAmount.pb-2(name = 'programBonusAmount', type='number', input='programBonusAmount', step = 0.1)
                         a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/programs', role='button') Cancel
                         input(type = 'submit', value = 'Save').btn.btn-primary.mt-3.me-2
         

@@ -8,7 +8,7 @@ function get(key){
 }
 
 async function create(key){
-    setTimeout(() => sessions.delete(key), 5 * 60 * 1000);
+    setTimeout(() => sessions.delete(key), 10 * 60 * 1000);
     await update(key);
 
     return sessions.get(key);

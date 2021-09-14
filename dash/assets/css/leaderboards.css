@@ -1,0 +1,28 @@
+tr{
+    line-height: 50px;
+}
+.container{
+    background-color: rgba(7, 15, 46, 0.952);
+    padding: 10px;
+    border: 2px solid white;
+    width: 90%;
+    display: flexbox;
+}
+.row{
+    display: flexbox;
+    justify-content:space-around;
+    margin-top: 5px;
+}
+
+table{
+    color: white;
+    padding: 30px;
+    --bs-table-hover-bg: rgb(12 52 205 / 95%) !important;
+}
+td, th{
+    color:white;
+    white-space: nowrap;
+}
+#avatar{
+    width: 50px;
+}

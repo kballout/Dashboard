@@ -43,7 +43,6 @@ html(lang="en")
                 h2#teamTitle Edit Team #{team['Team Name']}
                 form#editTeamForm(name = 'editTeamForm', action='/servers/' + guild.id + '/edit/' + team['Name'], method = 'POST')  
                     .container(style={'background-color': 'rgb(3, 5, 15)'})
-                        a.btn.btn-primary#returnBtn.mt-3(href='/servers/' + guild.id + '/management', role='button') Return
                         .row
                             .col-4
                                 .container
@@ -70,20 +69,7 @@ html(lang="en")
                                     label(for='teamFlag') Team Flag URL:
                                     input#teamFlag.pb-2(name = 'teamFlag', type='text', input='teamFlag', pattern = 'https://drive.google.com/thumbnail\\?id=.*|none')
                             input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
-                            button#deleteBtn.btn.btn-primary.mt-2(type='button', data-bs-toggle='modal', data-bs-target='#exampleModal')
-                                | Delete
-                            #exampleModal.modal.fade(tabindex='-1', aria-labelledby='exampleModalLabel', aria-hidden='true')
-                                .modal-dialog
-                                    .modal-content
-                                        .modal-header
-                                            h5#exampleModalLabel.modal-title Delete Team
-                                            button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
-                                        .modal-body
-                                            | Are you sure you want to delete the team called 
-                                            strong #{team['Team Name']}?
-                                        .modal-footer
-                                            button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
-                                            a.button.btn.btn-primary(href='/servers/' + guild.id + '/delete/'+ team['Team Name'], type='button') Confirm
+                            a.btn.btn-primary#returnBtn.mt-2(href='/servers/' + guild.id + '/management', role='button') Return
 
 
 

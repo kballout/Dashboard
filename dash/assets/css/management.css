@@ -8,7 +8,7 @@ td, th{
     color:white;
     white-space: nowrap;
 }
-input[type = 'submit'], #deleteBtn{
+input[type = 'submit'], #returnBtn{
     width: fit-content;
     height: fit-content;   
 }

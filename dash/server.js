@@ -1,6 +1,5 @@
 const express = require('express');
 const cookies = require('cookies');
-const categories = require('../dash/categories')
 const methodOverride = require('method-override');
 const middleware = require('./modules/middleware');
 const rateLimit = require('./modules/rate-limiter');

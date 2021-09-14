@@ -1,0 +1,53 @@
+.container{
+    background-color: rgba(7, 15, 46, 0.952);
+    padding: 10px;
+    border: 2px solid white;
+    width: 90%;
+    display: flexbox;
+}
+.row{
+    display: flexbox;
+    justify-content:space-around;
+    margin-top: 5px;
+}
+
+table{
+    color: white;
+    padding: 30px;
+    --bs-table-hover-bg: rgb(12 52 205 / 95%) !important;
+}
+td, th{
+    color:white;
+    white-space: nowrap;
+}
+
+input[type = 'submit'], #return, #deleteBtn{
+    width: fit-content;
+    height: fit-content;   
+}
+input[type = 'number'], input[type = 'text'], select{
+    border-radius: 6px;
+    padding: 2px;
+    line-height: 10px;
+}
+
+#currItem{
+    font-size: small;
+    font-style: italic;
+}
+#itemName{
+    width: 400px;
+}
+input[type='number']{
+    width: 80px;
+}
+label{
+    padding-right: 5px;
+}
+.modal{
+    color: black;
+}
+
+input[type='submit'], #returnBtn{
+    float: right;
+}

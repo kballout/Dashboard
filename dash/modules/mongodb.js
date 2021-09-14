@@ -393,6 +393,7 @@ class DB {
         
     }
 
+    //MODERATION
     async getBadWordsList(dbName){
         let client = this.#connect();
         database = (await client).db(dbName);
@@ -614,6 +615,8 @@ class DB {
     }
 
 
+
+
     //PROGRAMS
     async getAllProgramData(dbName){
         let client = this.#connect();
@@ -623,10 +626,263 @@ class DB {
         return await doc.findOne(query);   
     }
 
+    async updateProgramCount(dbName, count){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var filter = {Name: "Program IDs"};
+        let search = 'Total Programs';
+        let update = {$set:{[search]: count}}
+        doc.updateOne(filter, update);
+    }
+
+    async createNewProgram(dbName, progNumber, progName, progFactor ,progBonusType, progBonusAmount){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        let location = 'Programs.' + 'Program ' + progNumber;
+        let newItem = {
+            $set:{
+                [location]:{
+                    Name: progName,
+                    Factor: Double(progFactor),
+                    Count: 0,
+                    'Bonus Type': progBonusType,
+                    'Bonus Amount': Double(progBonusAmount)
+                }
+            }
+        }
+        let filter = {Name: 'Program IDs'};
+        await doc.updateOne(filter, newItem, {upsert: true})
+        let newCount = {$set:{'Total Programs': progNumber}};
+        await doc.updateOne(filter, newCount);
+    }
+
+    async getOneProgram(dbName, num){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var query = "Programs.Program " + num;
+        
+        return await doc.distinct(query, {Name: 'Program IDs'});   
+    }
+
+    async updateProgName(dbName, num, name){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var search = 'Programs.Program ' + num + '.Name';
+        let filter = {Name: 'Program IDs'};
+        let update = {$set:{[search]: name}};
+        await doc.updateOne(filter, update);
+    }
+
+    async updateProgFactor(dbName, num, factor){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var search = 'Programs.Program ' + num + '.Factor';
+        let filter = {Name: 'Program IDs'};
+        let update = {$set:{[search]: Double(factor)}};
+        await doc.updateOne(filter, update);
+    }
+
+    async updateProgBonusAmount(dbName, num, bonus){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var search = 'Programs.Program ' + num + '.Bonus Amount';
+        let filter = {Name: 'Program IDs'};
+        let update = {$set:{[search]: Double(bonus)}};
+        await doc.updateOne(filter, update);
+    }
+
+    async updateProgBonusType(dbName, num, type){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        var search = 'Programs.Program ' + num + '.Bonus Type';
+        let filter = {Name: 'Program IDs'};
+        let update = {$set:{[search]: type}};
+        await doc.updateOne(filter, update);
+    }
+
+    async deleteProgram(dbName, number){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+
+        let removedName = await doc.distinct('Programs.Program ' + number + '.Name', {Name: 'Program IDs'}); 
+        //Inital Delete program entry
+        var location = 'Programs.Program ' + number;
+        var removeItem = {$unset:{[location]: {}}};
+        let filter = {Name: 'Program IDs'};
+        await doc.updateOne(filter, removeItem);
+        
+        //get total programs currently
+        var total = await doc.distinct('Total Programs', filter);
+        total;
+        //Update new programs
+        var nextLocation, nextRemove;
+        for(var i  = number; i < total; i++){
+            var data = await this.getOneProgram(dbName, 1 + i);
+            this.createNewProgram(dbName, i, 
+                data[0]['Name'],
+                parseFloat(data[0]['Factor']),
+                parseInt(data[0]['Bonus Type']),
+                parseFloat(data[0]['Bonus Amount']))
+            //Delete old item
+            nextLocation = 'Programs.Program ' + (1 + i);
+            nextRemove = {$unset:{[nextLocation]: {}}};
+            await doc.updateOne(filter, nextRemove);
+        }
+        total--;
+        this.updateProgramCount(dbName, total);
+        this.deleteProgramForAllUsers(dbName, removedName);
+
+    }
+
+    async updateProgramForAllUsers(dbName, programName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        let filter;
+        let totalAttendance = 'Participation.Total Attendance Per Program.' + programName;
+        let highestStreak = 'Participation.Highest Streaks Per Program.' + programName;
+        let currentStreaksInitial = 'Participation.Current Streaks.' + programName + '.Initial';
+        let currentStreaksCurr = 'Participation.Current Streaks.' + programName + '.Current';
+        let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        let update = {$set:{[totalAttendance]: 0}}
+        await doc.updateMany({}, [update], {upsert: false, multi:true});
+        update = {$set:{[highestStreak]: 0}}
+        await doc.updateMany({}, [update], {upsert: false, multi:true});
+        update = {$set:{[currentStreaksInitial]: 0}}
+        await doc.updateMany({}, [update], {upsert: false, multi:true});
+        update = {$set:{[currentStreaksCurr]: 0}}
+        await doc.updateMany({}, [update], {upsert: false, multi:true});
+        
+
+        let nextVariable, nextMonth;
+        for(let i = 0; i < months.length; i++){
+            nextVariable = 'Participation.Monthly Attendance Per Program.' + programName + '.' + months[i];
+            nextMonth = {$set:{[nextVariable]: 0}};
+            await doc.updateMany({}, nextMonth,{upsert: false, multi:true});
+        }
+
+    }
+
+    async deleteProgramForAllUsers(dbName, progName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+
+        let location1 = 'Participation.Total Attendance Per Program.' + progName;
+        let location2 = 'Participation.Highest Streaks Per Program.' + progName;
+        let location3 = 'Participation.Current Streaks.' + progName;
+        let location4 = 'Participation.Monthly Attendance Per Program.' + progName;
+        
+      
+        await doc.updateMany({}, {$unset:{[location1]: 1, [location2]: 1, [location3]: 1, [location4]: 1}}, {multi:true} );
+    }
 
 
 
 
+    //LEADERBOARDS
+    async getTopUsersPoints(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        let allUsers = new Map(); 
+        let finalMap = new Map(); 
+        let cursor = doc.find();
+        let nextDoc;
+        while(await cursor.hasNext()){
+            nextDoc = await cursor.next();
+            allUsers.set(await doc.distinct('User ID', nextDoc), await doc.distinct('Points', nextDoc) );
+        }
+        allUsers = new Map([...allUsers.entries()].sort((a, b) => b[1] - a[1]));
+        return allUsers;
+    }
+
+   
+    async getAllUsers(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.find({}, {projection: {'_id': 0,'User ID': 1}}).toArray();
+    }
+
+    async getUserCurrPoints(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Points', {'User ID': user});
+    }
+
+    async getUserTotalPoints(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Statistics.Points Earned.Total', {'User ID': user});
+    }
+
+    async getUserMonthlyPoints(dbName, user, month){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Statistics.Points Earned.Monthly.' + [month], {'User ID': user});
+    }
+
+    async getUserTotalExchange(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Statistics.Exchange.Total', {'User ID': user});
+    }
+
+    async getUserMonthlyExchange(dbName, user, month){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Statistics.Exchange.Monthly.' + [month], {'User ID': user});
+    }
+
+    async getUserHighestStreak(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Participation.All Time Highest Streak', {'User ID': user});
+    }
+
+    async getUserTotalAttendance(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Participation.Complete Total', {'User ID': user});
+    }
+
+    async getUserLevel(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Level', {'User ID': user});
+    }
+
+    async getUserXP(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('XP', {'User ID': user});
+    }
+
+    async getUserTotalMsg(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Messages Sent', {'User ID': user});
+    }
 
     parseBool(val) { 
         if(val === 'true'){

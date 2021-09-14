@@ -112,9 +112,11 @@ router.get('/servers/:id/management', validateGuild, async (req, res) => {
 
 //edit one team
 router.get('/servers/:id/edit/:teamName', validateGuild, async (req, res) => {
+    var guildExists = await mongo.checkIfExists(req.params.id);
     var team = await mongo.getOneTeam(req.params.id, req.params.teamName);
     res.render('dashboard/modules/team/editTeam', {
         team,
+        guildExists
     })
 })
 
@@ -122,6 +124,7 @@ router.get('/servers/:id/edit/:teamName', validateGuild, async (req, res) => {
 router.get('/servers/:id/makeTeam', validateGuild, async (req, res) => {
     var guildExists = await mongo.checkIfExists(req.params.id);
     var allTeams = await mongo.getAllTeamData(req.params.id);
+    await sleep(2000);
     res.render('dashboard/modules/team/createTeam', {
         allTeams,
         guildExists
@@ -185,10 +188,12 @@ router.get('/servers/:id/stores', validateGuild, async (req, res) => {
 //get single item to edit
 router.get('/servers/:id/editStore/:storeNum/:itemNumber', validateGuild, async (req, res) => {
     var store = req.params.storeNum;
+    var guildExists = await mongo.checkIfExists(req.params.id);
     var item = await mongo.getItemData(req.params.id, store, req.params.itemNumber);
     res.render('dashboard/modules/store/editStore', {
         item,
-        store
+        store,
+        guildExists
     })
     
 })
@@ -213,14 +218,30 @@ router.get('/servers/:id/delete/:storeNum/:itemNumber', validateGuild, async (re
 })
 
 
+
+
+
 //programs
 router.get('/servers/:id/programs', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
     let programs = await mongo.getAllProgramData(req.params.id);
-    console.log(programs);
     res.render('dashboard/modules/programs', {
         guildExists,
         programs
+    })
+    
+})
+
+//edit program
+router.get('/servers/:id/editprogram/:program', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let program = await mongo.getOneProgram(req.params.id, req.params.program);
+    let num = req.params.program;
+    res.render('dashboard/modules/programs/editProgram', {
+        guildExists,
+        program,
+        num
+
     })
     
 })
@@ -229,13 +250,111 @@ router.get('/servers/:id/programs', validateGuild, async (req, res) => {
 router.get('/servers/:id/createprogram', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
     let programs = await mongo.getAllProgramData(req.params.id);
-    console.log(programs);
+    let total = programs['Total Programs'];
+    total++;
     res.render('dashboard/modules/programs/createprogram', {
         guildExists,
-        programs
+        programs,
+        total
     })
     
 })
+
+//delete program
+router.get('/servers/:id/deleteprogram/:program', validateGuild, async (req, res) => {
+    await mongo.deleteProgram(req.params.id, parseInt(req.params.program));
+    res.redirect('/servers/' + req.params.id + '/programs');
+    
+})
+
+
+
+
+
+//leaderboards
+router.get('/servers/:id/stats', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let loggedIn = true;
+    let month = new Date().toLocaleDateString('default', {month : 'long'});
+    var users = [];
+    let allUserIDs = await mongo.getAllUsers(req.params.id);
+    let nextUser = {};
+    for(var i = 0; i < allUserIDs.length; i++){
+        nextUser = {
+            'username': await (await bot.users.fetch(allUserIDs[i]['User ID'])).username,
+            'discriminator': await (await bot.users.fetch(allUserIDs[i]['User ID'])).discriminator,
+            'currentPoints': await mongo.getUserCurrPoints(req.params.id, allUserIDs[i]['User ID']),
+            'totalPoints': await mongo.getUserTotalPoints(req.params.id, allUserIDs[i]['User ID']),
+            'avatarUrl': (await bot.users.fetch(allUserIDs[i]['User ID'])).avatarURL(),
+            'monthlyPoints': await mongo.getUserMonthlyPoints(req.params.id, allUserIDs[i]['User ID'], month),
+            'totalExchange': await mongo.getUserTotalExchange(req.params.id, allUserIDs[i]['User ID']),
+            'monthlyExchange': await mongo.getUserMonthlyExchange(req.params.id, allUserIDs[i]['User ID'], month),
+            'highestStreak': await mongo.getUserHighestStreak(req.params.id, allUserIDs[i]['User ID']),
+            'attendance': await mongo.getUserTotalAttendance(req.params.id, allUserIDs[i]['User ID']),
+            'level': await mongo.getUserLevel(req.params.id, allUserIDs[i]['User ID']),
+            'xp': await mongo.getUserXP(req.params.id, allUserIDs[i]['User ID']),
+            'messages': await mongo.getUserTotalMsg(req.params.id, allUserIDs[i]['User ID']),
+        }
+        nextUser['untilNextLevel'] = 5 * Math.pow(nextUser['level'], 2) + 50 * nextUser['level'] + 100,
+        users.push(nextUser);
+    }
+
+    //sort
+    var usersByCurrentPoints = JSON.parse(JSON.stringify(users)); 
+    var usersByTotalPoints = JSON.parse(JSON.stringify(users));
+    var usersByMonthlyPoints = JSON.parse(JSON.stringify(users));
+    var usersByTotalExchange = JSON.parse(JSON.stringify(users));
+    var usersByMonthlyExchange = JSON.parse(JSON.stringify(users));
+    var usersByHighestStreak = JSON.parse(JSON.stringify(users));
+    var usersByAttendance = JSON.parse(JSON.stringify(users));
+    var usersByLevel = JSON.parse(JSON.stringify(users));
+    var usersByMessages = JSON.parse(JSON.stringify(users));
+
+    usersByCurrentPoints.sort(function (a, b){
+            return b.currentPoints - a.currentPoints;
+    })
+    usersByTotalPoints.sort(function (a, b){
+        return b.totalPoints - a.totalPoints;
+    })
+    usersByMonthlyPoints.sort(function (a, b){
+        return b.monthlyPoints - a.monthlyPoints;
+    })
+    usersByTotalExchange.sort(function (a, b){
+        return b.totalExchange - a.totalExchange;
+    })
+    usersByMonthlyExchange.sort(function (a, b){
+        return b.monthlyExchange - a.monthlyExchange;
+    })
+    usersByHighestStreak.sort(function (a, b){
+        return b.highestStreak - a.highestStreak;
+    })
+    usersByAttendance.sort(function (a, b){
+        return b.attendance - a.attendance;
+    })
+    usersByMessages.sort(function (a, b){
+        return b.messages - a.messages;
+    })
+    usersByLevel.sort(function (a, b){
+        return b.level - a.level || b.xp - a.xp;
+    })
+
+    res.render('dashboard/modules/leaderboards', {
+        guildExists,
+        loggedIn,
+        usersByTotalPoints,
+        usersByCurrentPoints,
+        usersByMonthlyPoints,
+        usersByTotalExchange,
+        usersByMonthlyExchange,
+        usersByHighestStreak,
+        usersByAttendance,
+        usersByMessages,
+        usersByLevel
+    })
+    
+})
+
+
 
 
 //POST requests
@@ -461,6 +580,8 @@ router.post('/servers/:id/icons', (req, res) => {
 })
 
 
+
+
 //words
 router.post('/servers/:id/words', (req, res) => {
     
@@ -480,7 +601,7 @@ router.post('/servers/:id/words', (req, res) => {
 
 
 
-
+//teams
 router.post('/servers/:id/edit/:teamName', (req, res) => {
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'teamPoints'){
@@ -550,5 +671,86 @@ router.post('/servers/:id/makeItem/:storeNum/:itemNum', async (req, res) => {
     
     res.redirect('/servers/' + req.params.id + '/stores');
 })
+
+
+
+
+//create program function
+router.post('/servers/:id/createprogram/:program', async (req, res) => {
+    let name = capitalizeTheFirstLetterOfEachWord(req.body['programName']);
+    let data = await mongo.getAllProgramData(req.params.id);
+    let isValid = true;
+    for(let i = 1; i < data['Total Programs']; i++){
+        if(name === data['Programs']['Program ' +  i]['Name']){
+            isValid = false;
+            break;
+        }
+    }
+    if(isValid){
+        let bonusType;
+        if(req.body['programBonusType'] === 'noBonus'){
+            bonusType = 0;
+        }
+        else if(req.body['programBonusType'] === 'fullAttendance'){
+            bonusType = 1;
+        }
+        else if(req.body['programBonusType'] === 'partialAttendance'){
+            bonusType = 2;
+        }
+    
+        await mongo.createNewProgram(req.params.id, parseInt(req.params.program), name, parseFloat(req.body['programFactor']), bonusType, parseFloat(req.body['programBonusAmount']))
+        await mongo.updateProgramForAllUsers(req.params.id, name);
+        res.redirect('/servers/' + req.params.id + '/programs');
+    }
+    else{
+        res.render('errors/progError');
+    }
+    
+})
+
+//edit program function
+router.post('/servers/:id/editprogram/:program', async (req, res) => {
+    
+    for (let [key, value] of Object.entries(req.body)){
+        if(key === 'programFactor'){
+            await mongo.updateProgFactor(req.params.id, req.params.program, parseFloat(req.body['programFactor']));
+        }
+        if(key === 'programBonusType'){
+            let bonusType;
+            if(req.body['programBonusType'] === 'noBonus'){
+                bonusType = 0;
+            }
+            else if(req.body['programBonusType'] === 'fullAttendance'){
+                bonusType = 1;
+            }
+            else if(req.body['programBonusType'] === 'partialAttendance'){
+                bonusType = 2;
+            }
+            await mongo.updateProgBonusType(req.params.id, req.params.program, bonusType);
+        }
+        if(key === 'programBonusAmount'){
+            await mongo.updateProgBonusAmount(req.params.id, req.params.program, parseFloat(req.body['programBonusAmount']));
+        }
+        
+    }
+    res.redirect('/servers/' + req.params.id + '/programs');
+
+    
+})
+
+
+
+
+
+
+
+function capitalizeTheFirstLetterOfEachWord(words) {
+    var separateWord = words.toLowerCase().split(' ');
+    for (var i = 0; i < separateWord.length; i++) {
+       separateWord[i] = separateWord[i].charAt(0).toUpperCase() +
+       separateWord[i].substring(1);
+    }
+    return separateWord.join(' ');
+ }
 
 module.exports = router;

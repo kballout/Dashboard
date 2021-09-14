@@ -43,7 +43,6 @@ html(lang="en")
                 .container(style={'background-color' : 'rgb(3, 5, 15)'})
                     h2.text-center #{store}
                     h3.text-center Item ##{item[0]['Number']} Settings
-                    a#return.btn.btn-primary.mb-5(href='/servers/' + guild.id + '/stores', role='button') Return
                     form#editStoreForm(name = 'editStoreForm', action='/servers/' + guild.id + '/editStore/' + store + '/' + item[0]['Number'], method = 'POST')  
                         .row
                             .col-7
@@ -88,6 +87,6 @@ html(lang="en")
                                     input#itemCost(name = 'itemCost', type='number', input='itemCost', min = 0)
                         .row  
                             input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
-                            a#deleteBtn.btn.btn-primary.mt-2(href='/servers/' + guild.id + '/stores', role='button') Delete
+                            a#return.btn.btn-primary.mt-2(href='/servers/' + guild.id + '/stores', role='button') Cancel
                             
                         
