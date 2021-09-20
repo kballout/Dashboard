@@ -9,9 +9,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
         li.ps-2(class=(title == 'manageServer') ? 'active' : null)
           a(href='/dashboard') Manage Server
         li.ps-3(class=(title == 'about') ? 'active' : null)
-          a(href='/') Commands
-        li.ps-3(class=(title == 'commands') ? 'active' : null)
-          a(href='/') About
+          a(href='/commands') Commands
     .navbar-nav.ml-auto#loginSection
       if user
         .dropdown.mx-4.mt-2

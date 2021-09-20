@@ -1,0 +1,22 @@
+#mainContainer{
+    background-color: rgb(3, 5, 15);
+    padding: 10px;
+    border: 2px solid white;
+    align-items: center;
+}
+.command{
+    background-color: rgba(19, 38, 112, 0.952);
+    border: 2px solid white;
+    padding: 10px;
+    border-radius: 6px;
+    
+}
+ul{
+    justify-content: center;
+}
+p.small{
+    font-size: small;
+}
+.italic{
+    font-style: italic;
+}

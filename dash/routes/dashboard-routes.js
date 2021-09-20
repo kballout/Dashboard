@@ -11,8 +11,8 @@ function sleep(ms) {
   }
 
   //login
-router.get('/dashboard', (req, res) => res.render('dashboard/index', {
-    subtitle: 'dashboard',
+router.get('/dashboard', (req, res) => res.render('dashboard/dashboardIndex', {
+    subtitle: 'Dashboard',
     categories,
 }));
 
@@ -21,6 +21,7 @@ router.get('/servers/:id', validateGuild, async (req, res) => {
     var guildExists = await mongo.checkIfExists(req.params.id);
     res.render('dashboard/show', {
         guildExists,
+        subtitle: 'Dashboard',
         categories,
         key: res.cookies.get('key')
     })
@@ -32,6 +33,7 @@ router.get('/servers/:id/general', validateGuild, async (req, res) => {
     if(!guildExists){
         res.render('dashboard/modules/general', {
             guildExists,
+            subtitle: 'Settings',
             categories,
     
         })
@@ -93,6 +95,7 @@ router.get('/servers/:id/moderation', validateGuild, async (req, res) => {
     let badWordsList = await mongo.getBadWordsList(req.params.id);
     res.render('dashboard/modules/moderation', {
         guildExists,
+        subtitle: 'Moderation',
         badWordsList
     })
 })
@@ -106,6 +109,7 @@ router.get('/servers/:id/management', validateGuild, async (req, res) => {
     var allTeams = await mongo.getAllTeamData(req.params.id);
     res.render('dashboard/modules/management', {
         guildExists,
+        subtitle: 'Teams',
         allTeams,
     })
 })
@@ -116,6 +120,7 @@ router.get('/servers/:id/edit/:teamName', validateGuild, async (req, res) => {
     var team = await mongo.getOneTeam(req.params.id, req.params.teamName);
     res.render('dashboard/modules/team/editTeam', {
         team,
+        subtitle: 'Edit Team',
         guildExists
     })
 })
@@ -127,6 +132,7 @@ router.get('/servers/:id/makeTeam', validateGuild, async (req, res) => {
     await sleep(2000);
     res.render('dashboard/modules/team/createTeam', {
         allTeams,
+        subtitle: 'Create Team',
         guildExists
     })
 	
@@ -180,6 +186,7 @@ router.get('/servers/:id/stores', validateGuild, async (req, res) => {
     var allStores = await mongo.getAllStoresData(req.params.id);
     res.render('dashboard/modules/stores', {
         guildExists,
+        subtitle: 'Stores',
         allStores,
     })
     
@@ -193,6 +200,7 @@ router.get('/servers/:id/editStore/:storeNum/:itemNumber', validateGuild, async 
     res.render('dashboard/modules/store/editStore', {
         item,
         store,
+        subtitle: 'Edit Store',
         guildExists
     })
     
@@ -205,6 +213,7 @@ router.get('/servers/:id/makeItem/:storeNum', validateGuild, async (req, res) =>
     item++;
     res.render('dashboard/modules/store/makeItem', {
         item,
+        subtitle: 'Create Item',
         store
     }) 
 })
@@ -227,7 +236,8 @@ router.get('/servers/:id/programs', validateGuild, async (req, res) => {
     let programs = await mongo.getAllProgramData(req.params.id);
     res.render('dashboard/modules/programs', {
         guildExists,
-        programs
+        programs,
+        subtitle: 'Programs'
     })
     
 })
@@ -240,7 +250,8 @@ router.get('/servers/:id/editprogram/:program', validateGuild, async (req, res) 
     res.render('dashboard/modules/programs/editProgram', {
         guildExists,
         program,
-        num
+        num,
+        subtitle: 'Edit Program'
 
     })
     
@@ -255,7 +266,8 @@ router.get('/servers/:id/createprogram', validateGuild, async (req, res) => {
     res.render('dashboard/modules/programs/createprogram', {
         guildExists,
         programs,
-        total
+        total,
+        subtitle: 'Create Program'
     })
     
 })
@@ -279,13 +291,15 @@ router.get('/servers/:id/stats', validateGuild, async (req, res) => {
     var users = [];
     let allUserIDs = await mongo.getAllUsers(req.params.id);
     let nextUser = {};
+
     for(var i = 0; i < allUserIDs.length; i++){
+        
         nextUser = {
-            'username': await (await bot.users.fetch(allUserIDs[i]['User ID'])).username,
-            'discriminator': await (await bot.users.fetch(allUserIDs[i]['User ID'])).discriminator,
+            'username': await mongo.getUserName(req.params.id, allUserIDs[i]['User ID']),
+            'discriminator': await mongo.getUserDiscriminator(req.params.id, allUserIDs[i]['User ID']),
             'currentPoints': await mongo.getUserCurrPoints(req.params.id, allUserIDs[i]['User ID']),
             'totalPoints': await mongo.getUserTotalPoints(req.params.id, allUserIDs[i]['User ID']),
-            'avatarUrl': (await bot.users.fetch(allUserIDs[i]['User ID'])).avatarURL(),
+            'avatarUrl': await mongo.getUserAvatar(req.params.id, allUserIDs[i]['User ID']),
             'monthlyPoints': await mongo.getUserMonthlyPoints(req.params.id, allUserIDs[i]['User ID'], month),
             'totalExchange': await mongo.getUserTotalExchange(req.params.id, allUserIDs[i]['User ID']),
             'monthlyExchange': await mongo.getUserMonthlyExchange(req.params.id, allUserIDs[i]['User ID'], month),
@@ -300,6 +314,7 @@ router.get('/servers/:id/stats', validateGuild, async (req, res) => {
     }
 
     //sort
+    
     var usersByCurrentPoints = JSON.parse(JSON.stringify(users)); 
     var usersByTotalPoints = JSON.parse(JSON.stringify(users));
     var usersByMonthlyPoints = JSON.parse(JSON.stringify(users));
@@ -309,9 +324,11 @@ router.get('/servers/:id/stats', validateGuild, async (req, res) => {
     var usersByAttendance = JSON.parse(JSON.stringify(users));
     var usersByLevel = JSON.parse(JSON.stringify(users));
     var usersByMessages = JSON.parse(JSON.stringify(users));
+    
+    
 
     usersByCurrentPoints.sort(function (a, b){
-            return b.currentPoints - a.currentPoints;
+        return b.currentPoints - a.currentPoints;
     })
     usersByTotalPoints.sort(function (a, b){
         return b.totalPoints - a.totalPoints;
@@ -338,6 +355,7 @@ router.get('/servers/:id/stats', validateGuild, async (req, res) => {
         return b.level - a.level || b.xp - a.xp;
     })
 
+    
     res.render('dashboard/modules/leaderboards', {
         guildExists,
         loggedIn,
@@ -349,7 +367,8 @@ router.get('/servers/:id/stats', validateGuild, async (req, res) => {
         usersByHighestStreak,
         usersByAttendance,
         usersByMessages,
-        usersByLevel
+        usersByLevel,
+        subtitle: 'Leaderboards'
     })
     
 })
@@ -737,10 +756,6 @@ router.post('/servers/:id/editprogram/:program', async (req, res) => {
 
     
 })
-
-
-
-
 
 
 

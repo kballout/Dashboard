@@ -806,7 +806,6 @@ class DB {
         return allUsers;
     }
 
-   
     async getAllUsers(dbName){
         let client = this.#connect();
         database = (await client).db(dbName);
@@ -884,12 +883,34 @@ class DB {
         return await doc.distinct('Messages Sent', {'User ID': user});
     }
 
+    async getUserName(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Name', {'User ID': user});
+    }
+
+    async getUserAvatar(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Avatar', {'User ID': user});
+    }
+
+    async getUserDiscriminator(dbName, user){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Player Profile");
+        return await doc.distinct('Discriminator', {'User ID': user});
+    }
+
+
     parseBool(val) { 
         if(val === 'true'){
             return true;
         }
         return false;
-      }
+    }
     
     async closeConnection(){
         await client.close();

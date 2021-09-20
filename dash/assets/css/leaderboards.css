@@ -5,8 +5,7 @@ tr{
     background-color: rgba(7, 15, 46, 0.952);
     padding: 10px;
     border: 2px solid white;
-    width: 90%;
-    display: flexbox;
+    width: fit-content;
 }
 .row{
     display: flexbox;
@@ -14,6 +13,9 @@ tr{
     margin-top: 5px;
 }
 
+.col-4,.col-5{
+    width: 50%;
+}
 table{
     color: white;
     padding: 30px;

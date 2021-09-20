@@ -20,11 +20,11 @@ router.get('/:id/stats', async (req, res) => {
     let nextUser = {};
     for(var i = 0; i < allUserIDs.length; i++){
         nextUser = {
-            'username': await (await bot.users.fetch(allUserIDs[i]['User ID'])).username,
-            'discriminator': await (await bot.users.fetch(allUserIDs[i]['User ID'])).discriminator,
+            'username': await mongo.getUserName(req.params.id, allUserIDs[i]['User ID']),
+            'discriminator': await mongo.getUserDiscriminator(req.params.id, allUserIDs[i]['User ID']),
             'currentPoints': await mongo.getUserCurrPoints(req.params.id, allUserIDs[i]['User ID']),
             'totalPoints': await mongo.getUserTotalPoints(req.params.id, allUserIDs[i]['User ID']),
-            'avatarUrl': (await bot.users.fetch(allUserIDs[i]['User ID'])).avatarURL(),
+            'avatarUrl': await mongo.getUserAvatar(req.params.id, allUserIDs[i]['User ID']),
             'monthlyPoints': await mongo.getUserMonthlyPoints(req.params.id, allUserIDs[i]['User ID'], month),
             'totalExchange': await mongo.getUserTotalExchange(req.params.id, allUserIDs[i]['User ID']),
             'monthlyExchange': await mongo.getUserMonthlyExchange(req.params.id, allUserIDs[i]['User ID'], month),
@@ -87,9 +87,16 @@ router.get('/:id/stats', async (req, res) => {
         usersByHighestStreak,
         usersByAttendance,
         usersByMessages,
-        usersByLevel
+        usersByLevel,
+        subtitle: "Leaderboards"
     })
     
+})
+
+router.get('/commands', (req,res) => {
+    res.render("commands", {
+        subtitle: 'Commands'
+    });
 })
 
 module.exports = router;

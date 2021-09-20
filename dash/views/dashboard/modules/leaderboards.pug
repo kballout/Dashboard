@@ -54,7 +54,7 @@ html(lang="en")
                 #pills-tabContent.tab-content
                     #pills-points.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-points-tab')
                         .row
-                            .col-7
+                            .col-5
                                 .container
                                     table.table.table-hover
                                         h2.text-center Top 10 of All Time
@@ -66,17 +66,17 @@ html(lang="en")
                                         tbody 
                                             each user in usersByTotalPoints
                                                 if count === 10
-                                                    break
-                                                -count++
+                                                   - break
+                                                - count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.totalPoints}
                             .col-5
-                                -count = 0
+                                - count = 0
                                 .container
                                     table.table.table-hover
                                         h2.text-center Top 10 this Month
@@ -84,21 +84,21 @@ html(lang="en")
                                             tr
                                                 th(scope='col') #
                                                 th.col(scope='col') User
-                                                th(scope='col') Points
+                                                th.col-4(scope='col') Points
                                         tbody 
                                             each user in usersByMonthlyPoints
                                                 if count === 10
-                                                    break
-                                                -count++
+                                                   - break
+                                                - count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.monthlyPoints}
-                            .col.mt-4
-                                -count = 0
+                            .col-5.mt-4
+                                - count = 0
                                 .container
                                     table.table.table-hover
                                         h2.text-center Top Currently
@@ -106,43 +106,43 @@ html(lang="en")
                                             tr
                                                 th(scope='col') #
                                                 th.col(scope='col') User
-                                                th(scope='col') Points
+                                                th.col-4(scope='col') Points
                                         tbody 
                                             each user in usersByCurrentPoints
-                                                -count++
+                                                - count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.currentPoints}
                     #pills-rank.tab-pane.fade(role='tabpanel', aria-labelledby='pills-rank-tab')
+                        -count = 0
                         .row
-                            .col
-                                -count = 0
+                            .col-8
                                 .container
                                     table.table.table-hover
                                         h2.text-center Top Users by Level
                                         thead
                                             tr
-                                                th(scope='col') Rank #
+                                                th(scope='col') #
                                                 th.col(scope='col') User
-                                                th.col-4(scope='col') Level
-                                                th.col(scope='col') EXP
+                                                th(scope='col') Level
+                                                th.col-3(scope='col') EXP
                                         tbody 
                                             each user in usersByLevel
                                                 -count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.level}
                                                     td #{user.xp} / #{user.untilNextLevel}
-                            .col-5
-                                -count = 0
+                            -count = 0                        
+                            .col-5.mt-4
                                 .container
                                     table.table.table-hover
                                         h2.text-center Top 10 who send Messages
@@ -150,16 +150,16 @@ html(lang="en")
                                             tr
                                                 th(scope='col') #
                                                 th.col(scope='col') User
-                                                th(scope='col') Messages Sent
+                                                th.col-3(scope='col') Messages
                                         tbody 
                                             each user in usersByMessages
                                                 if count === 10
-                                                    break
+                                                   - break
                                                 -count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td.text-center #{user.messages}
@@ -180,7 +180,7 @@ html(lang="en")
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.attendance}
@@ -197,18 +197,18 @@ html(lang="en")
                                         tbody 
                                             each user in usersByHighestStreak
                                                 if count === 10
-                                                    break
+                                                   - break
                                                 -count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.highestStreak}
                     #pills-exchange.tab-pane.fade(role='tabpanel', aria-labelledby='pills-exchange-tab')
                         .row
-                            .col
+                            .col-5
                                 -count = 0
                                 .container
                                     table.table.table-hover
@@ -221,12 +221,12 @@ html(lang="en")
                                         tbody 
                                             each user in usersByTotalExchange
                                                 if count === 10
-                                                    break
+                                                   - break
                                                 -count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.totalExchange}
@@ -243,12 +243,12 @@ html(lang="en")
                                         tbody 
                                             each user in usersByMonthlyPoints
                                                 if count === 10
-                                                    break
+                                                   - break
                                                 -count++
                                                 tr 
                                                     th(scope='row') #{count}
                                                     td 
-                                                        img.round#avatar.me-3(src= user.avatarUrl, alt = user.username) 
+                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
                                                         span.ps-2 ##{user.discriminator}
                                                         span.ps-2 #{user.username} 
                                                     td #{user.monthlyExchange}

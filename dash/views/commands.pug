@@ -1,0 +1,167 @@
+doctype html
+html(lang="en")
+    head
+        include includes/header.pug
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/commands.css')
+        script(src='/js/main.js', defer)
+    body 
+        include includes/navbar.pug
+        .jumbotron.text-center.bg-transparent.mt-4
+            h1.display-3 Command List
+            section#mainContent
+                ul#pills-tab.nav.nav-pills.mb-3(role='tablist')
+                    li.nav-item(role='presentation')
+                        button#pills-players-tab.nav-link.active(data-bs-toggle='pill', data-bs-target='#pills-players', type='button', role='tab', aria-controls='pills-players', aria-selected='true') Players
+                    li.nav-item(role='presentation')
+                        button#pills-gameAdmin-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-gameAdmin', type='button', role='tab', aria-controls='pills-gameAdmin', aria-selected='false') Game Admins
+                    li.nav-item(role='presentation')
+                        button#pills-gameMaster-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-gameMaster', type='button', role='tab', aria-controls='pills-gameMaster', aria-selected='false') Game Masters
+                .container#mainContainer
+                    #pills-tabContent.tab-content
+                        #pills-players.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-players-tab')
+                            h2 The following commands are for players 
+                                .row.mt-3
+                                    .col-2
+                                        .container.command 
+                                            h3 !Help
+                                            hr
+                                            p.small Receive a message from Guild Master with helpful commands
+                                            hr
+                                            p.small example 
+                                            p.small.italic !help
+                                    .col-2 
+                                        .container.command
+                                            h3 !Profile
+                                            hr
+                                            p.small Check your current profile (rank, points, xp, boosters)
+                                            hr
+                                            p.small example 
+                                            p.small.italic !profile
+                                    .col-2 
+                                        .container.command
+                                            h3 !Exchange (#)
+                                            hr
+                                            p.small Exchange an amount of points to your team
+                                            hr
+                                            p.small example 
+                                            p.small.italic !exchange 25
+                                    .col-2 
+                                        .container.command
+                                            h3 !Rate
+                                            hr
+                                            p.small Check what the current exchange rate is
+                                            hr
+                                            p.small example 
+                                            p.small.italic !rate
+                                    .col-2 
+                                        .container.command
+                                            h3 !UseBoost
+                                            hr
+                                            p.small Use a booster card you currently own
+                                            hr
+                                            p.small example 
+                                            p.small.italic !useboost 2.5
+                                    .col-2 
+                                        .container.command
+                                            h3 !buy (Store #) (Item #)
+                                            hr
+                                            p.small Purchase an item from a store you currently have access to
+                                            hr
+                                            p.small example 
+                                            p.small.italic !buy store 1 3
+                        #pills-gameAdmin.tab-pane.fade(role='tabpanel', aria-labelledby='pills-gameAdmin-tab')
+                            h2 The following commands are for game admins
+                            p.lead.small These commands can also be used by game masters
+                            .row.mt-3
+                                    .col-2
+                                        .container.command 
+                                            h3 !Help
+                                            hr
+                                            p.small Receive a message from Guild Master with helpful commands
+                                            hr
+                                            p.small example 
+                                            p.small.italic !help
+                                    .col-2
+                                        .container.command 
+                                            h3 !Leaderboards
+                                            hr
+                                            p.small Sends an updated team leaderboards to the leaderboards channel
+                                            hr
+                                            p.small example 
+                                            p.small.italic !leaderboards
+                                    .col-3
+                                        .container.command 
+                                            h4 !GiveBoost (#) (@user) or !GiveBoost (#) (Team Name)
+                                            hr
+                                            p.small Gives a booster card to a specific user(s) or all users on a specified team
+                                            hr
+                                            p.small example 
+                                            p.small.italic !giveboost 2.5 @KMK
+                                    .col-2
+                                        .container.command 
+                                            h3 !UpdateStore (Store #)
+                                            hr
+                                            p.small Sends an Updated list of items to the store specified
+                                            hr
+                                            p.small example 
+                                            p.small.italic !updatestore store 1
+                                    .col-3
+                                        .container.command 
+                                            h4 !Points (@user) or !Points (Team Name)
+                                            hr
+                                            p.small Checks the current points for the specified user(s) or team
+                                            hr
+                                            p.small example 
+                                            p.small.italic !Points @KMK
+                                    .col-3
+                                        .container.command 
+                                            h4 !StartBattle (Cost) (Game Name) (@Challenger) (@Defender)
+                                            hr
+                                            p.small Initiate a battle between the two mentioned parties. Challenger pays double the cost. This can also be used with team battles by inputting team names as the challenger and defender
+                                            hr
+                                            p.small example 
+                                            p.small.italic !startbattle 10 Chess (@KMK) (@MC)
+                                    .col-3
+                                        .container.command 
+                                            h4 !EndBattle (Amount) (Game Name) (@Winner) (@Loser)
+                                            hr
+                                            p.small Ends a battle between the two mentioned parties. This can also be used to end a battle sequence between two teams
+                                            hr
+                                            p.small example 
+                                            p.small.italic !endbattle 20 Chess (@MC) (@KMK)
+                                    .col-3
+                                        .container.command 
+                                            h4 !g (Amount) (Reason) (@user(s)) (pid-Program Name)
+                                            hr
+                                            p.small Rewards an amount of points to the specified user(s). You can also give an optional reason as well as an optional program. By giving a program name, statistics and attendance will be counted for that program. A team name can be given in place of the mentioned user(s) to give points to everyone on a team
+                                            hr
+                                            p.small example 
+                                            p.small.italic !g 15 Answering questions correctly @KMK
+                                    .col-3
+                                        .container.command 
+                                            h4 !gvoice (Amount) (Channel Name) (pid-Program Name)
+                                            hr
+                                            p.small Rewards an amount of points to the user(s) currently in the specified channel name. You can also specify and optional program name. This will account for attendance for that program. 
+                                            hr
+                                            p.small example 
+                                            p.small.italic !gvoice 15 General pid-Discussions
+                                    .col-3
+                                        .container.command 
+                                            h4 !gvoice+ (Amount) (Channel Name) (pid-Program Name)
+                                            hr
+                                            p.small Performs the same function as !gvoice but gives additional bonus points based on current attendance, team attendance, and attendance streaks. 
+                                            hr
+                                            p.small example 
+                                            p.small.italic !gvoice+ 15 General pid-Discussions
+                                    .col-3
+                                        .container.command 
+                                            h4 !gxp (Amount) (@User(s))
+                                            hr
+                                            p.small Gives a specified amount of XP to the user(s) mentioned.
+                                            hr
+                                            p.small example 
+                                            p.small.italic !gxp 35 @KMK @MC
+                        #pills-gameMaster.tab-pane.fade(role='tabpanel', aria-labelledby='pills-gameMaster-tab')
+                            h2 The following commands are for game masters
+

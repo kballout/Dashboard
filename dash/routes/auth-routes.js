@@ -31,7 +31,7 @@ router.get('/auth', async (req, res) => {
         res.render('index', {msg});
     }
     catch{
-        res.redirect('/');
+        res.redirect('/dashboard');
     }
 });
 
