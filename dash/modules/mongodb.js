@@ -827,11 +827,24 @@ class DB {
         return await doc.distinct('Statistics.Points Earned.Total', {'User ID': user});
     }
 
-    async getUserMonthlyPoints(dbName, user, month){
+    async getUserMonthlyPoints(dbName, user){
         let client = this.#connect();
         database = (await client).db(dbName);
+        let amount
         let doc = database.collection("Player Profile");
-        return await doc.distinct('Statistics.Points Earned.Monthly.' + [month], {'User ID': user});
+        amount = parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.January', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.February', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.March', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.April', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.May', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.June', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.July', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.August', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.September', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.October', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.November', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.December', {'User ID': user}));
+        return amount;
     }
 
     async getUserTotalExchange(dbName, user){
@@ -841,11 +854,24 @@ class DB {
         return await doc.distinct('Statistics.Exchange.Total', {'User ID': user});
     }
 
-    async getUserMonthlyExchange(dbName, user, month){
+    async getUserMonthlyExchange(dbName, user){
         let client = this.#connect();
         database = (await client).db(dbName);
+        let amount
         let doc = database.collection("Player Profile");
-        return await doc.distinct('Statistics.Exchange.Monthly.' + [month], {'User ID': user});
+        amount = parseFloat(await doc.distinct('Statistics.Exchange.Monthly.January', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.February', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.March', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.April', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.May', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.June', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.July', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.August', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.September', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.October', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.November', {'User ID': user}));
+        amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.December', {'User ID': user}));
+        return amount;
     }
 
     async getUserHighestStreak(dbName, user){

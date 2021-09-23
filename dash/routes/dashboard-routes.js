@@ -287,7 +287,6 @@ router.get('/servers/:id/deleteprogram/:program', validateGuild, async (req, res
 router.get('/servers/:id/stats', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
     let loggedIn = true;
-    let month = new Date().toLocaleDateString('default', {month : 'long'});
     var users = [];
     let allUserIDs = await mongo.getAllUsers(req.params.id);
     let nextUser = {};
@@ -300,9 +299,9 @@ router.get('/servers/:id/stats', validateGuild, async (req, res) => {
             'currentPoints': await mongo.getUserCurrPoints(req.params.id, allUserIDs[i]['User ID']),
             'totalPoints': await mongo.getUserTotalPoints(req.params.id, allUserIDs[i]['User ID']),
             'avatarUrl': await mongo.getUserAvatar(req.params.id, allUserIDs[i]['User ID']),
-            'monthlyPoints': await mongo.getUserMonthlyPoints(req.params.id, allUserIDs[i]['User ID'], month),
+            'monthlyPoints': await mongo.getUserMonthlyPoints(req.params.id, allUserIDs[i]['User ID']),
             'totalExchange': await mongo.getUserTotalExchange(req.params.id, allUserIDs[i]['User ID']),
-            'monthlyExchange': await mongo.getUserMonthlyExchange(req.params.id, allUserIDs[i]['User ID'], month),
+            'monthlyExchange': await mongo.getUserMonthlyExchange(req.params.id, allUserIDs[i]['User ID']),
             'highestStreak': await mongo.getUserHighestStreak(req.params.id, allUserIDs[i]['User ID']),
             'attendance': await mongo.getUserTotalAttendance(req.params.id, allUserIDs[i]['User ID']),
             'level': await mongo.getUserLevel(req.params.id, allUserIDs[i]['User ID']),
