@@ -59,7 +59,13 @@ html(lang="en")
                                 .container
                                     h4 Program Bonus Type
                                     p.small Summary: This identifies the type of bonus given for the program when the give bonuses command is used or the automatic monthly bonuses is triggered.
-                                    p#currItem Currently: #{program[0]['Bonus Type']}
+                                    p#currItem Currently: 
+                                        if program[0]['Bonus Type'] === 0
+                                            | no bonus
+                                        else if program[0]['Bonus Type'] === 1
+                                            | full attendance bonus
+                                        else 
+                                            | partial attendance bonus 
                                     hr
                                     input#programBonusType(name = 'programBonusType', hidden, value = '')
                                     label(for='programBonusT') Program Bonus Type:

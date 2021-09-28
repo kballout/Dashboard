@@ -621,6 +621,7 @@ router.post('/servers/:id/words', (req, res) => {
 
 //teams
 router.post('/servers/:id/edit/:teamName', (req, res) => {
+    console.log(req.body);
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'teamPoints'){
             mongo.updateTeamPoints(req.params.id, req.params.teamName, parseFloat(value));
@@ -728,26 +729,26 @@ router.post('/servers/:id/createprogram/:program', async (req, res) => {
 
 //edit program function
 router.post('/servers/:id/editprogram/:program', async (req, res) => {
-    
+    console.log(req.body);
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'programFactor'){
-            await mongo.updateProgFactor(req.params.id, req.params.program, parseFloat(req.body['programFactor']));
+            await mongo.updateProgFactor(req.params.id, req.params.program, parseFloat(value));
         }
         if(key === 'programBonusType'){
             let bonusType;
-            if(req.body['programBonusType'] === 'noBonus'){
+            if(value === 'noBonus'){
                 bonusType = 0;
             }
-            else if(req.body['programBonusType'] === 'fullAttendance'){
+            else if(value === 'fullAttendance'){
                 bonusType = 1;
             }
-            else if(req.body['programBonusType'] === 'partialAttendance'){
+            else if(value === 'partialAttendance'){
                 bonusType = 2;
             }
             await mongo.updateProgBonusType(req.params.id, req.params.program, bonusType);
         }
         if(key === 'programBonusAmount'){
-            await mongo.updateProgBonusAmount(req.params.id, req.params.program, parseFloat(req.body['programBonusAmount']));
+            await mongo.updateProgBonusAmount(req.params.id, req.params.program, parseFloat(value));
         }
         
     }

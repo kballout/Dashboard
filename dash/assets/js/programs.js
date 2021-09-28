@@ -11,7 +11,7 @@ $('#createProgramForm').submit(function (event) {
 });
 
 $('#editProgramForm').submit(function (event) {
-    var newData = getData();
+    var newData = getEditData();
     
     if(Object.keys(newData).length === 0){
         event.preventDefault();
@@ -26,6 +26,28 @@ $('#editProgramForm').submit(function (event) {
     }
     
 });
+
+function getEditData(){
+    var data = {};
+    var newType = document.getElementById('programBonusT').value;
+
+    
+    if ($('#programFactor').val().length !== 0){
+        data['programFactor'] = document.getElementById("programFactor").value;
+        
+    }
+    if ($('#programBonusAmount').val().length !== 0){
+        data['programBonusAmount'] = document.getElementById("programBonusAmount").value;
+        
+    }
+
+    if (currType !== newType){
+        data['programBonusType'] = document.getElementById('programBonusT').value;
+        document.getElementById('programBonusType').setAttribute('value', newType);
+    }
+
+    return data;
+}
 
 function getData(){
     var data = {};

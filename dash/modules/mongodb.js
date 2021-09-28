@@ -99,7 +99,7 @@ class DB {
         
         let value = await doc.distinct(fieldName);
         doc.findOneAndUpdate({[fieldName]: value[0] },
-        {$set:{[fieldName]: num}}, function(err, res){
+        {$set:{[fieldName]: Double(num)}}, function(err, res){
             if (err) throw err;
         });
         
