@@ -40,68 +40,54 @@ html(lang="en")
             if !guildExists
                 h3.text-center(style={'font-style': 'italic', color: 'red'}) Please initiate the server before attempting to change settings.
             else
+                - var count
+                - count = 0
+                a#createNewStore.btn.btn-primary.me-2(href='/servers/' + guild.id + '/createNewStore', role='button') 
+                    i.fas.fa-plus Create Additional Store
                 .container
+                    h4.text-center Main Stores | Additional Stores
                     ul#pills-tab.nav.nav-pills.mb-3.justify-content-center(role='tablist')
-                        li.nav-item(role='presentation')
-                            button#pills-store1-tab.nav-link.active(data-bs-toggle='pill', data-bs-target='#pills-store1', type='button', role='tab', aria-controls='pills-store1', aria-selected='true') Store 1
-                        li.nav-item(role='presentation')
-                            button#pills-store2-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-store2', type='button', role='tab', aria-controls='pills-store2', aria-selected='false') Store 2 
-                        li.nav-item(role='presentation')
-                            button#pills-store3-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-store3', type='button', role='tab', aria-controls='pills-store3', aria-selected='false') Store 3
-                        li.nav-item(role='presentation')
-                            button#pills-teamStore-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-teamStore', type='button', role='tab', aria-controls='pills-teamStore', aria-selected='false') Team Store
+                        each store in allStores 
+                            - count++
+                            if count === 5
+                                hr.mt-1(width ='3', size='30')
+                            li.nav-item(role='presentation')
+                                if count === 1
+                                    button.nav-link.active(id = 'pills-store' + count + '-tab', data-bs-toggle='pill', data-bs-target='#pills-store' + count, type='button', role='tab', aria-controls='pills-store' + count, aria-selected='true') #{store.Name}
+                                else 
+                                    button.nav-link(id = 'pills-store' + count + '-tab', data-bs-toggle='pill', data-bs-target='#pills-store' + count, type='button', role='tab', aria-controls='pills-store' + count, aria-selected='false') #{store.Name}
                     #pills-tabContent.tab-content
-                        #pills-store1.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-store1-tab')
-                            table.table.table-hover
-                                thead
-                                    tr
-                                        th(scope='col') Item #
-                                        th.col-3(scope='col') Name
-                                        th(scope='col') Quantity
-                                        th(scope='col') Cost
-                                        th(scope='col') Availability
-                                        th.text-center(scope='col') Actions
-                                tbody
-                                    +generateStoreTable(allStores[0])
-                        #pills-store2.tab-pane.fade(role='tabpanel', aria-labelledby='pills-store2-tab')
-                            table.table.table-hover
-                                thead
-                                    tr
-                                        th(scope='col') Item #
-                                        th(scope='col') Name
-                                        th(scope='col') Quantity
-                                        th(scope='col') Cost
-                                        th(scope='col') Availability
-                                        th(scope='col') Actions
-
-                                tbody
-                                    +generateStoreTable(allStores[1])
-                        #pills-store3.tab-pane.fade(role='tabpanel', aria-labelledby='pills-store3-tab')
-                            table.table.table-hover
-                                thead
-                                    tr
-                                        th(scope='col') Item #
-                                        th(scope='col') Name
-                                        th(scope='col') Quantity
-                                        th(scope='col') Cost
-                                        th(scope='col') Availability
-                                        th(scope='col') Actions
-                                tbody
-                                    +generateStoreTable(allStores[2])
-                        #pills-teamStore.tab-pane.fade(role='tabpanel', aria-labelledby='pills-teamStore-tab')
-                            table.table.table-hover
-                                thead
-                                    tr
-                                        th(scope='col') Item #
-                                        th(scope='col') Name
-                                        th(scope='col') Quantity
-                                        th(scope='col') Cost
-                                        th(scope='col') Availability
-                                        th(scope='col') Actions
-                                tbody 
-                                    +generateStoreTable(allStores[3])
-                    
-
-
+                        - count = 0
+                        each store in allStores 
+                            - count++
+                            if count === 1
+                                .tab-pane.fade.show.active(id = 'pills-store' + count, role='tabpanel', aria-labelledby='pills-store' + count + '-tab')
+                                    table.table.table-hover
+                                            thead
+                                                tr
+                                                    th(scope='col') Item #
+                                                    th.col-3(scope='col') Name
+                                                    th(scope='col') Quantity
+                                                    th(scope='col') Cost
+                                                    th(scope='col') Availability
+                                                    th.text-center(scope='col') Actions
+                                            tbody
+                                                if store.Name === allStores[allStores.length - 1].Name
+                                                    +generateStoreTable(store, true)
+                                                else 
+                                                    +generateStoreTable(store, false)
+                            else 
+                                .tab-pane.fade(id = 'pills-store' + count, role='tabpanel', aria-labelledby='pills-store' + count + '-tab')
+                                    table.table.table-hover
+                                        thead
+                                            tr
+                                                th(scope='col') Item #
+                                                th.col-3(scope='col') Name
+                                                th(scope='col') Quantity
+                                                th(scope='col') Cost
+                                                th(scope='col') Availability
+                                                th.text-center(scope='col') Actions
+                                        tbody
+                                            +generateStoreTable(store)
         
         

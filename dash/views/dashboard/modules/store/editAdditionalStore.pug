@@ -1,0 +1,112 @@
+doctype html
+html(lang="en")
+    head
+        include ../../../includes/header.pug
+        include ../../../includes/mixins
+        script(src='/js/sidebar.js', defer)
+        
+        script(src='/js/additionalStores.js', defer)
+        link(rel='stylesheet', href='/css/sidebar.css')
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/stores.css')
+        
+    body 
+        include ../../../includes/sidebar.pug
+
+        #sidebarExtention.bf-light
+            header.text-center.pt-4 
+                .large-icon.bg-white.round 
+                    if guild.icon
+                        img.round(src=guild.iconURL({dynamic: true, size: 128 }), alt = guild.name)
+                    else
+                        p.abbr #{guild.nameAcronym}
+                h4#overview.pt-2 #{guild.name}
+            .tabs.navbar-nav
+                .category
+                a(href = '/servers/' + guild.id).cursor-pointer Overview
+                a(href = '/servers/' + guild.id + '/general').cursor-pointer #[i.fas.fa-cogs.ps-2.text-muted] General
+                a(href = '/servers/' + guild.id + '/moderation').cursor-pointer #[i.fas.fa-hammer.ps-2.text-muted] Moderation
+                a(href = '/servers/' + guild.id + '/management').cursor-pointer #[i.fas.fa-users-cog.ps-2.text-muted] Team Management
+                a(href = '/servers/' + guild.id + '/stores').cursor-pointer #[i.fas.fa-store-alt.ps-2.text-muted] Stores
+                a(href = '/servers/' + guild.id + '/programs').cursor-pointer #[i.fas.fa-hiking.ps-2.text-muted] Programs
+                a(href = '/servers/' + guild.id + '/stats').cursor-pointer #[i.fas.fa-chart-line.ps-2.text-muted] Stats
+
+        include ../../../includes/navbar.pug
+
+        section#mainContent
+            - var driveUrl = "https://drive.google.com/thumbnail\\?id=.*|https://drive.google.com/uc\\?export=download&id=.*|none"
+            -currVal
+            h1.display-5.text-center #{storeInfo[0]['Name']} Settings
+            p.lead.text-center Edit the settings of the additional store
+                .container(style={'background-color' : 'rgb(3, 5, 15)'})
+                    h4.text-center Store Information
+                     Delete This Store
+                    button#deleteBtn.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#modal' + counts)
+                        | Delete This Store
+                    .modal.fade(id = 'modal' + counts,tabindex='-1', aria-labelledby='#modalLabel' + counts, aria-hidden='true')
+                        .modal-dialog
+                            .modal-content
+                                .modal-header
+                                    h5(id = 'modalLabel' + counts).modal-title Delete Store
+                                    button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
+                                .modal-body
+                                    | Are you sure you want to delete 
+                                    strong #{storeInfo[0]['Name']}
+                                .modal-footer
+                                    button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
+                                    a#deleteStore.btn.btn-primary.me-2(href='/servers/' + guild.id + '/deleteStore/'+ storeInfo[0]['Name'], type='button') Confirm
+                    hr
+                    form#editAdditionalStoreForm(name = 'editAdditionalStoreForm', action='/servers/' + guild.id + '/editAdditionalStore/' + storeInfo[0]['Name'], onsubmit = 'return validateStoreSettings()' method = 'POST')  
+                        .row
+                            .col-7
+                                .container
+                                    h2 Store Icon
+                                    p.small Set the icon of the additional store. (must be in  the following format: https://drive.google.com/uc\?export=download&id=)
+                                    if storeInfo[0]['Icon'] === 'https://drive.google.com/thumbnail?id='
+                                        -currVal = 'None'
+                                    else 
+                                        -currVal = storeInfo[0]['Icon']
+                                    p.small(style={'font-style': 'italic'}) Currently: #{currVal}
+                                    hr
+                                    label(for='storeIcon') Icon URL:
+                                    input#storeIcon(name = 'storeIcon',size ='50' ,type='text', input='storeIcon' pattern = driveUrl)
+                            .col-4
+                                .container
+                                    h2 Level Required
+                                    p.small The level required by players to gain access to the store.
+                                    p.small(style={'font-style': 'italic'}) Currently: #{storeInfo[0]['Level Required']}
+                                    hr
+                                    label(for='levelRequired') Level Required:
+                                    input#levelRequired(name = 'levelRequired', type = 'number', input = 'levelRequired', min = 1)
+                        .row    
+                            .col-7
+                                .container#options
+                                    h2 Options
+                                    p.small Select additional stores to be revealed with this store. This will give the user the ability to choose which store they want. (Note: this will override the level requirement to the lowest of the stores.)
+                                    hr
+                                    p.small#errorMsg
+                                    - var found
+                                    - found = false
+                                    input#checkedBoxes(name = 'checkedBoxes', hidden, value = '')
+                                    each store in additionalStoreNames
+                                        if store['Name'] !== storeInfo[0]['Name']
+                                            each optional in storeInfo[0]['Options']
+                                                if store['Name'] === optional
+                                                    - found = true
+                                                    - break
+                                            if found === true
+                                                - found = false
+                                                select.mt-2.me-2(type='select', id=`checkbox${store['Name']}`, name =store['Name'])
+                                                    option(value='On') On
+                                                    option(value='Off') Off
+                                            else
+                                                select.mt-2.me-2(type='select', id=`checkbox${store['Name']}`, name =store['Name'])  
+                                                    option(value='Off') Off
+                                                    option(value='On') On
+                                            label(for=`checkbox${store['Name']}`) #{store['Name']}
+                                            br
+                        .row  
+                            input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
+                            a#return.btn.btn-primary.mt-2(href='/servers/' + guild.id + '/stores', role='button') Cancel
+                            
+                        

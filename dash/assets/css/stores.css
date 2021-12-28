@@ -48,3 +48,22 @@ label{
 .modal{
     color: black;
 }
+
+
+/* Additional stores */
+
+#createNewStore{
+    width: fit-content;
+    margin-left: auto;
+    margin-bottom: 8px;
+}
+
+#errorMsg{
+    color: red;
+}
+input[type = checkbox]{
+    position:static !important;
+    width: 15px;
+    height: 15px;
+    margin: 5px;
+}

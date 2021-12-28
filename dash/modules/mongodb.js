@@ -357,36 +357,28 @@ class DB {
             });
         }
         else if(choice === 'store1Icon'){
-            let fieldName = "Store 1 Icon";
-            let value = await doc.distinct(fieldName);
-            doc.findOneAndUpdate({['Store 1 Icon']: value[0] },
-            {$set:{'Store 1 Icon': url}}, function(err, res){
-                if (err) throw err;
-            });
+            doc = database.collection("Stores");
+            let filter = {Name: 'Store 1'};
+            let update = {$set: {'Icon': url}};
+            await doc.updateOne(filter, update);
         }
         else if(choice === 'store2Icon'){
-            let fieldName = "Store 2 Icon";
-            let value = await doc.distinct(fieldName);
-            doc.findOneAndUpdate({['Store 2 Icon']: value[0] },
-            {$set:{'Store 2 Icon': url}}, function(err, res){
-                if (err) throw err;
-            });
+            doc = database.collection("Stores");
+            let filter = {Name: 'Store 2'};
+            let update = {$set: {'Icon': url}};
+            await doc.updateOne(filter, update);
         }
         else if(choice === 'store3Icon'){
-            let fieldName = "Store 3 Icon";
-            let value = await doc.distinct(fieldName);
-            doc.findOneAndUpdate({['Store 3 Icon']: value[0] },
-            {$set:{'Store 3 Icon': url}}, function(err, res){
-                if (err) throw err;
-            });
+            doc = database.collection("Stores");
+            let filter = {Name: 'Store 3'};
+            let update = {$set: {'Icon': url}};
+            await doc.updateOne(filter, update);
         }
         else {
-            let fieldName = "Team Store Icon";
-            let value = await doc.distinct(fieldName);
-            doc.findOneAndUpdate({['Team Store Icon']: value[0] },
-            {$set:{'Team Store Icon': url}}, function(err, res){
-                if (err) throw err;
-            });
+            doc = database.collection("Stores");
+            let filter = {Name: 'Team Store'};
+            let update = {$set: {'Icon': url}};
+            await doc.updateOne(filter, update);
         }
 
         
@@ -509,7 +501,36 @@ class DB {
         return await doc.distinct(search , {Name:store});
     }
     
+    async getStoreIcons(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let storeIcons = [];
+        var filter = {Name: 'Store 1'};
+        let value = await doc.distinct('Icon', filter)
+        storeIcons.push({'Store 1': value[0]});
+        
+        filter = {Name: 'Store 2'}
+        value = await doc.distinct('Icon', filter)
+        storeIcons.push({'Store 2': value[0]});
+ 
+        filter = {Name: 'Store 3'}
+        value = await doc.distinct('Icon', filter)
+        storeIcons.push({'Store 3': value[0]});
 
+        filter = {Name: 'Team Store'}
+        value = await doc.distinct('Icon', filter)
+        storeIcons.push({'Team Store': value[0]});
+        return storeIcons;
+    }
+
+    async getAllStoreNames(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        return await doc.find({}, {projection:{'_id': 0, 'Name': 1}}).toArray();     
+    }
+    
 
     //UPDATES STORE
     async updateItemName(dbName, store, item, name){
@@ -613,6 +634,145 @@ class DB {
             await doc.updateOne(filter, nextRemove);
         }
     }
+
+
+    //ADDITIONAL STORES
+    async createNewAdditionalStore(dbName, storeName, ID ,levelRequired, roleID){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let newStore = {
+            Name: storeName,
+            ID: ID,
+            'Role ID': roleID,
+            'Level Required': levelRequired,
+            Icon: '',
+            Options:{
+
+            },
+            Items: {
+                'Item 1': {
+                    Number: 1,
+                    Name: "",
+                    Cost: Double(0),
+                    Available: false
+                },
+                'Item 2': {
+                    Number: 2,
+                    Name: "",
+                    Cost: Double(0),
+                    Available: false
+                },
+                'Item 3': {
+                    Number: 3,
+                    Name: "",
+                    Cost: Double(0),
+                    Available: false
+                }
+            }
+        }
+        await doc.insertOne(newStore);
+    }
+
+    async getSingleStoreData(dbName, store){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        return await doc.find({Name: store}, {projection:{'_id': 0, 'Name': 1, 'Level Required': 1, 'Icon': 1, 'Options': 1}}).toArray();
+    }
+
+    async getStoreOptionsSize(dbName, store){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let options = await this.getSingleStoreData(dbName, store);
+        return Object.values(options[0]['Options']).length;
+    }
+
+    async getNumberForStoreOption(dbName, store, option){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let options = await this.getSingleStoreData(dbName, store);
+        for(let [key, value] of Object.entries(options[0]['Options'])){
+            if(value === option){
+                return key;
+            }
+        }
+    }
+
+    async updateStoreLevelRequired(dbName, store, level){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let filter = {Name: store};
+        let update = {$set: {'Level Required': level}};
+        await doc.updateOne(filter, update);
+    }
+
+    async updateStoreIcon(dbName, store, icon){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let filter = {Name: store};
+        let update = {$set: {Icon: icon}};
+        await doc.updateOne(filter, update);
+    }
+
+    async addStoreOption(dbName, store, option, length){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let field = `Options.${length}`
+        let filter = {Name: store};
+        await doc.updateOne(filter, {$set:{[field]: option}})
+    }
+
+    async removeStoreOption(dbName, store, option){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let num = await this.getNumberForStoreOption(dbName, store, option);
+        let field = `Options.${num}`;
+        let filter = {Name: store};
+        await doc.updateOne(filter, {$unset:{[field]: option}})
+        
+    }
+
+    async updateOptionNumbers(dbName, store){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        let allOptions = await this.getSingleStoreData(dbName, store);
+        let currOptions = await this.getAllCurrentOptions(dbName, store);
+        let filter = {Name: store};
+        let field;
+        //remove all options first
+        for(let [key, value] of Object.entries(allOptions[0]['Options'])){
+            field = `Options.${key}`
+            await doc.updateOne(filter, {$unset:{[field]: value}})
+        }
+        //set new option numbers
+        for(let i = 0; i < currOptions.length; i++){
+            field = `Options.${i}`
+            doc.updateOne(filter, {$set:{[field]: currOptions[i]}})
+        }
+    }
+
+    async getAllCurrentOptions(dbName, store){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let options = await this.getSingleStoreData(dbName, store);
+        return Object.values(options[0]['Options']);
+    }
+    
+    async deleteStore(dbName, store){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Stores");
+        await doc.deleteOne({Name: store});
+    }
+
+
+
 
 
 

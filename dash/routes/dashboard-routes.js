@@ -39,10 +39,11 @@ router.get('/servers/:id/general', validateGuild, async (req, res) => {
         })
     }
     else{
-        var data = await mongo.getAllGeneralData(req.params.id);
-        var conv1 = 'Off';
-        var conv2 = 'Off';
-        var conv3 = parseFloat(data['Exchange Rate']) * 100;
+        let data = await mongo.getAllGeneralData(req.params.id);
+        let storeIcons = await mongo.getStoreIcons(req.params.id);
+        let conv1 = 'Off';
+        let conv2 = 'Off';
+        let conv3 = parseFloat(data['Exchange Rate']) * 100;
             switch(data['Automatic Monthly Bonus']){
                 case true:
                     conv1 = 'true';
@@ -75,15 +76,14 @@ router.get('/servers/:id/general', validateGuild, async (req, res) => {
                     conv2 = '4PM';
                     break;
             }
-
         res.render('dashboard/modules/general', {
             guildExists,
             categories,
             data,
             conv1,
             conv2,
-            conv3
-
+            conv3,
+            storeIcons
         })
     }
     
@@ -226,9 +226,50 @@ router.get('/servers/:id/delete/:storeNum/:itemNumber', validateGuild, async (re
     
 })
 
+//additional stores creation page
+router.get('/servers/:id/createNewStore', validateGuild, async (req, res) => {
+    var guildExists = await mongo.checkIfExists(req.params.id);
+    var allStoreNames = await mongo.getAllStoreNames(req.params.id);
+    res.render('dashboard/modules/store/createNewStore', {
+        guildExists,
+        subtitle: 'Stores',
+        allStoreNames,
+    })
+    
+})
 
+//edit settings for additional store
+router.get('/servers/:id/editAdditionalStore/:store', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let additionalStoreNames = await mongo.getAllStoreNames(req.params.id);
+    removeMainStores(additionalStoreNames);
+    let storeInfo = await mongo.getSingleStoreData(req.params.id, req.params.store);
+    res.render('dashboard/modules/store/editAdditionalStore', {
+        guildExists,
+        subtitle: 'Stores',
+        additionalStoreNames,
+        storeInfo
+    })
+    
+})
 
-
+router.get('/servers/:id/deleteStore/:store', validateGuild, async (req,res) => {
+    let options = await mongo.getAllCurrentOptions(req.params.id, req.params.store);
+    let store2Info;
+    let length;
+    for(let i = 0; i < options.length; i++){
+        store2Info = await mongo.getSingleStoreData(req.params.id, options[i]);
+        length = await mongo.getStoreOptionsSize(req.params.id, req.params.store);
+            for(let i = 0; i < length; i++){
+                console.log(options[i] + 'remove')
+                if(req.params.store === store2Info[0].Options[i]){
+                    mongo.removeStoreOption(req.params.id, options[i], req.params.store, i);
+                }
+            }
+    }
+    await mongo.deleteStore(req.params.id, req.params.store)
+    res.redirect('/servers/' + req.params.id + '/Stores')
+})
 
 //programs
 router.get('/servers/:id/programs', validateGuild, async (req, res) => {
@@ -621,7 +662,6 @@ router.post('/servers/:id/words', (req, res) => {
 
 //teams
 router.post('/servers/:id/edit/:teamName', (req, res) => {
-    console.log(req.body);
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'teamPoints'){
             mongo.updateTeamPoints(req.params.id, req.params.teamName, parseFloat(value));
@@ -691,6 +731,90 @@ router.post('/servers/:id/makeItem/:storeNum/:itemNum', async (req, res) => {
     res.redirect('/servers/' + req.params.id + '/stores');
 })
 
+//create a new additional store
+router.post('/servers/:id/createNewStore', async (req, res) => {
+    let roleName = capitalizeTheFirstLetterOfEachWord(req.body.storeName);
+    let roleID;
+    let storeID;
+    let guild = bot.guilds.cache.get(req.params.id);
+    
+
+    //Create role
+    await guild.roles.create({name: roleName + ' Buyer', color: 'BLUE'}).then(role => {
+        roleID = role.id;
+    })
+
+    let mutedID = guild.roles.cache.find(r => r.name === 'Muted').id;
+    let adminID = guild.roles.cache.find(r => r.name === 'Game Admin').id;
+    let category = guild.channels.cache.find(c => c.name === 'MMO Stores' && c.type === 'GUILD_CATEGORY');
+    
+    //Create channel
+    await guild.channels.create(roleName, {
+        type: 'GUILD_TEXT'
+    }).then(channel => {
+        channel.setParent(category.id)
+        storeID = channel.id;
+        channel.permissionOverwrites.set([
+            {
+                id: mutedID,
+                deny: ['SEND_MESSAGES']
+            },
+            {
+                id: roleID,
+                deny: ['SEND_MESSAGES', 'MANAGE_MESSAGES'],
+                allow: ['VIEW_CHANNEL', 'ADD_REACTIONS']
+            },
+            {
+                id: adminID,
+                deny: ['SEND_MESSAGES', 'MANAGE_MESSAGES', 'MANAGE_CHANNELS'],
+                allow: ['VIEW_CHANNEL', 'ADD_REACTIONS']
+            },
+            {
+                id: guild.roles.everyone.id,
+                deny: ['VIEW_CHANNEL'],
+            }
+        ])
+    })
+
+    //Add to database
+    mongo.createNewAdditionalStore(req.params.id, roleName, storeID, parseInt(req.body.levelRequired), roleID);
+    res.redirect('/servers/' + req.params.id + '/stores');
+})
+
+//edit additional store settings
+router.post('/servers/:id/editAdditionalStore/:store', async (req, res) => {
+    let length = await mongo.getStoreOptionsSize(req.params.id, req.params.store);
+
+    for (let [key, value] of Object.entries(req.body)){
+        if(key === 'levelRequired' && value != ''){
+            mongo.updateStoreLevelRequired(req.params.id, req.params.store, parseInt(value));
+        }
+        else if(key === 'storeIcon' && value !== ''){
+            mongo.updateStoreIcon(req.params.id, req.params.store, value);
+        }
+        else if(key === 'checkedBoxes' && value !== '' && value !== 'undefined'){
+            let length2;
+            let changes = value.split(',');
+            let changeSplit;
+            for(let change of changes){
+                changeSplit = change.split('\t');
+                length2 = await mongo.getStoreOptionsSize(req.params.id, changeSplit[0]);
+                if(changeSplit[1] === 'On'){
+                    mongo.addStoreOption(req.params.id, req.params.store, changeSplit[0], length);
+                    length++;
+                    mongo.addStoreOption(req.params.id, changeSplit[0], req.params.store, length2);
+                }
+                else{
+                    await mongo.removeStoreOption(req.params.id, req.params.store, changeSplit[0]);
+                    await mongo.updateOptionNumbers(req.params.id, req.params.store);
+                    await mongo.removeStoreOption(req.params.id, changeSplit[0], req.params.store);
+                    await mongo.updateOptionNumbers(req.params.id, changeSplit[0]);
+                }
+            }
+        }
+    }
+    res.redirect('/servers/' + req.params.id + '/Stores')  
+})
 
 
 
@@ -729,7 +853,6 @@ router.post('/servers/:id/createprogram/:program', async (req, res) => {
 
 //edit program function
 router.post('/servers/:id/editprogram/:program', async (req, res) => {
-    console.log(req.body);
     for (let [key, value] of Object.entries(req.body)){
         if(key === 'programFactor'){
             await mongo.updateProgFactor(req.params.id, req.params.program, parseFloat(value));
@@ -760,12 +883,22 @@ router.post('/servers/:id/editprogram/:program', async (req, res) => {
 
 
 function capitalizeTheFirstLetterOfEachWord(words) {
-    var separateWord = words.toLowerCase().split(' ');
+    let separateWord = words.toLowerCase().split(' ');
     for (var i = 0; i < separateWord.length; i++) {
        separateWord[i] = separateWord[i].charAt(0).toUpperCase() +
        separateWord[i].substring(1);
     }
     return separateWord.join(' ');
+ }
+
+ function removeMainStores(additionalStoreNames){
+    for(let i = 0; i < additionalStoreNames.length; i++){
+        if(additionalStoreNames[i].Name === 'Store 1' || additionalStoreNames[i].Name === 'Store 2' || 
+            additionalStoreNames[i].Name === 'Store 3' || additionalStoreNames[i].Name === 'Team Store'){
+            additionalStoreNames.splice(i, 1);
+            i = -1;
+        }
+    }
  }
 
 module.exports = router;

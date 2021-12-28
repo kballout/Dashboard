@@ -1,4 +1,12 @@
-const currAvailable = document.getElementById('availability').value
+let currAvailable
+window.addEventListener('load', () => {
+    currAvailable = document.getElementById('availability').value;
+})
+
+
+
+
+
 
 $('#editStoreForm').submit(function (event) {
     var newData = getData();
@@ -29,6 +37,7 @@ $('#createItemForm').submit(function (event) {
     
 });
 
+
 function getData(){
     var data = {};
     var newAvailable = document.getElementById('availability').value;
@@ -45,11 +54,10 @@ function getData(){
         data['itemCost'] = document.getElementById("itemCost").value;
         
     }
-
-    if (currAvailable !== newAvailable){
-        data['available'] = document.getElementById('availability').value;
-        document.getElementById('available').setAttribute('value', newAvailable);
-    }
-
+if(currAvailable !== newAvailable){
+    data['available'] = document.getElementById('availability').value;
+    document.getElementById('available').setAttribute('value', newAvailable);
+}
+    
     return data;
 }

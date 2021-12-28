@@ -1,0 +1,63 @@
+doctype html
+html(lang="en")
+    head
+        include ../../../includes/header.pug
+        include ../../../includes/mixins
+        script(src='/js/sidebar.js', defer)
+        
+        script(src='/js/additionalStores.js', defer)
+        link(rel='stylesheet', href='/css/sidebar.css')
+        link(rel='stylesheet', href='/css/index.css')
+        link(rel='stylesheet', href='/css/stores.css')
+        
+    body 
+        include ../../../includes/sidebar.pug
+
+        #sidebarExtention.bf-light
+            header.text-center.pt-4 
+                .large-icon.bg-white.round 
+                    if guild.icon
+                        img.round(src=guild.iconURL({dynamic: true, size: 128 }), alt = guild.name)
+                    else
+                        p.abbr #{guild.nameAcronym}
+                h4#overview.pt-2 #{guild.name}
+            .tabs.navbar-nav
+                .category
+                a(href = '/servers/' + guild.id).cursor-pointer Overview
+                a(href = '/servers/' + guild.id + '/general').cursor-pointer #[i.fas.fa-cogs.ps-2.text-muted] General
+                a(href = '/servers/' + guild.id + '/moderation').cursor-pointer #[i.fas.fa-hammer.ps-2.text-muted] Moderation
+                a(href = '/servers/' + guild.id + '/management').cursor-pointer #[i.fas.fa-users-cog.ps-2.text-muted] Team Management
+                a(href = '/servers/' + guild.id + '/stores').cursor-pointer #[i.fas.fa-store-alt.ps-2.text-muted] Stores
+                a(href = '/servers/' + guild.id + '/programs').cursor-pointer #[i.fas.fa-hiking.ps-2.text-muted] Programs
+                a(href = '/servers/' + guild.id + '/stats').cursor-pointer #[i.fas.fa-chart-line.ps-2.text-muted] Stats
+
+        include ../../../includes/navbar.pug
+
+        section#mainContent
+            h1.display-5.text-center Additional Stores
+            p.lead.text-center Create a new store
+                .container(style={'background-color' : 'rgb(3, 5, 15)'})
+                    h4.text-center New Store Information
+                    hr
+                    form#createStoreForm(name = 'createStoreForm', action='/servers/' + guild.id + '/createNewStore', onsubmit = `return validateStoreCreation(${JSON.stringify(allStoreNames)})`, method = 'POST')  
+                        .row
+                            .col-7
+                                .container
+                                    h2 Store Name
+                                    p.small Set the name of the additional store.
+                                    hr
+                                    label(for='storeName') Name:
+                                    input#storeName(name = 'storeName', type='text', input='storeName', required)
+                                    p.small#errorMsg
+                            .col-4
+                                .container
+                                    h2 Level Required
+                                    p.small The level required by players to gain access to the store.
+                                    hr
+                                    label(for='levelRequired') Level Required:
+                                    input#levelRequired(name = 'levelRequired', type = 'number', input = 'levelRequired', required, min = 1)
+                        .row  
+                            input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
+                            a#return.btn.btn-primary.mt-2(href='/servers/' + guild.id + '/stores', role='button') Cancel
+                            
+                        

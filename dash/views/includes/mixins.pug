@@ -266,7 +266,7 @@ mixin teamMult(settings, data)
                         input#twoLowerTeams(name = 'twoLowerTeams', type='number', input='twoLowerTeams', min = '0', step = '0.1')
         input(type='submit', value = 'save')
 
-mixin icons(settings, data)
+mixin icons(settings, data, storeIcons)
    - var driveUrl = "https://drive.google.com/thumbnail\\?id=.*|https://drive.google.com/uc\\?export=download&id=.*|none"
     form#iconsForm(name = 'iconsForm', action='/servers/' + guild.id + '/icons', method='POST')  
         -currVal
@@ -327,10 +327,10 @@ mixin icons(settings, data)
                 .container
                     h2 #{settings[4].term}
                     p.small Summary: #{settings[4].description}.
-                    if data['Store 1 Icon'] === 'https://drive.google.com/thumbnail?id='
+                    if storeIcons[0]['Store 1'] === 'https://drive.google.com/thumbnail?id='
                         -currVal = 'None'
                     else 
-                        -currVal = data['Store 1 Icon']
+                        -currVal = storeIcons[0]['Store 1']
                     p.small#currStore1(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='store1Icon') Store 1 Icon:
@@ -340,10 +340,10 @@ mixin icons(settings, data)
                 .container
                     h2 #{settings[5].term}
                     p.small Summary: #{settings[5].description}.
-                    if data['Store 2 Icon'] === 'https://drive.google.com/thumbnail?id='
+                    if storeIcons[1]['Store 2'] === 'https://drive.google.com/thumbnail?id='
                         -currVal = 'None'
                     else 
-                        -currVal = data['Store 2 Icon']
+                        -currVal = storeIcons[1]['Store 2']
                     p.small#currStore2(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='store2Icon') Store 2 Icon:
@@ -353,10 +353,10 @@ mixin icons(settings, data)
                 .container
                     h2 #{settings[6].term}
                     p.small Summary: #{settings[6].description}.
-                    if data['Store 3 Icon'] === 'https://drive.google.com/thumbnail?id='
+                    if storeIcons[2]['Store 3'] === 'https://drive.google.com/thumbnail?id='
                         -currVal = 'None'
                     else 
-                        -currVal = data['Store 3 Icon']
+                        -currVal = storeIcons[2]['Store 3']
                     p.small#currStore3(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='store3Icon') Store 3 Icon:
@@ -366,10 +366,10 @@ mixin icons(settings, data)
                 .container
                     h2 #{settings[7].term}
                     p.small Summary: #{settings[7].description}.
-                    if data['Team Store Icon'] === 'https://drive.google.com/thumbnail?id='
+                    if storeIcons[3]['Team Store'] === 'https://drive.google.com/thumbnail?id='
                         -currVal = 'None'
                     else 
-                        -currVal = data['Team Store Icon']
+                        -currVal = storeIcons[3]['Team Store']
                     p.small#currTeamStore(style={'font-style': 'italic'}) Currently: #{currVal}
                     hr
                     label(for='teamStoreIcon') Team Store Icon:
@@ -409,12 +409,15 @@ mixin generateTeamTable(allTeams)
                                 button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
                                 a.button.btn.btn-primary(href='delete/'+ team['Team Name'], type='button') Confirm
 
-- var count = 0
-mixin generateStoreTable(store)
+- var counts = 0
+mixin generateStoreTable(store, isLast)
+    if store['Name'] != 'Store 1' && store['Name'] != 'Store 2' && store['Name'] != 'Store 3' && store['Name'] != 'Team Store'
+        a#editAdditionalStore.btn.btn-primary.me-2.float-right(href='/servers/' + guild.id + '/editAdditionalStore/' + store['Name'], role='button')
+            i.fas.fa-wrench Edit #{store['Name']} Settings 
     a#editStore.btn.btn-primary.me-2(href='/servers/' + guild.id + '/makeItem/'+ store['Name'], role='button') 
         i.fas.fa-plus New Item
     each item in store['Items']
-        -count++
+        -counts++
         tr 
             th(scope='row') #{item['Number']}
             td #{item['Name']} 
@@ -423,23 +426,23 @@ mixin generateStoreTable(store)
             td #{item['Available']}
             td.text-center 
                 a#editStore.btn.btn-primary.me-2(href='editStore/'+ store['Name'] + '/' + item['Number'], role='button') Edit
-                button#deleteBtn.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#modal' + count)
+                button#deleteBtn.btn.btn-primary(type='button', data-bs-toggle='modal', data-bs-target='#modal' + counts)
                     | Delete
-                .modal.fade(id = 'modal' + count,tabindex='-1', aria-labelledby='#modalLabel' + count, aria-hidden='true')
+                .modal.fade(id = 'modal' + counts,tabindex='-1', aria-labelledby='#modalLabel' + counts, aria-hidden='true')
                     .modal-dialog
                         .modal-content
                             .modal-header
-                                h5(id = 'modalLabel' + count).modal-title Delete Item
+                                h5(id = 'modalLabel' + counts).modal-title Delete Item
                                 button.btn-close(type='button', data-bs-dismiss='modal', aria-label='Close')
                             .modal-body
                                 | Are you sure you want to delete item # 
                                 strong #{item['Number']} from 
-                                 strong #{store['Name']}
+                                    strong #{store['Name']}
                             .modal-footer
                                 button.btn.btn-secondary(type='button', data-bs-dismiss='modal') Close
                                 a.button.btn.btn-primary(href='delete/'+ store['Name'] + '/' + item['Number'], type='button') Confirm
-    if store['Name'] === 'Team Store'
-        -count = 0            
+    if isLast === true
+        -counts = 0            
 
 
                   
