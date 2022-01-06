@@ -530,7 +530,38 @@ class DB {
         let doc = database.collection("Stores");
         return await doc.find({}, {projection:{'_id': 0, 'Name': 1}}).toArray();     
     }
+
+    async getWorldEvent(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        return await doc.distinct("World Event");
+    }
     
+    async editWorldEvent(dbName, val){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        let value = await doc.distinct('World Event.Status');
+        doc.findOneAndUpdate({['World Event.Status']: value[0] },
+        {$set:{'World Event.Status': val}}, function(err, res){
+            if (err) throw err;
+        });
+        if(val === false){
+            this.changeWorldEventCost(dbName, 0);
+        }
+    }
+
+    async changeWorldEventCost(dbName, val){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Guild Settings");
+        let value = await doc.distinct('World Event.Cost');
+        doc.findOneAndUpdate({['World Event.Cost']: value[0] },
+        {$set:{'World Event.Cost': Double(val)}}, function(err, res){
+            if (err) throw err;
+        });
+    }
 
     //UPDATES STORE
     async updateItemName(dbName, store, item, name){

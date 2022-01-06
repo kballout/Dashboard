@@ -177,17 +177,28 @@ router.get('/servers/:id/terminate', validateGuild, async (req, res) => {
 })
 
 
+//world event
+router.get('/servers/:id/deactivateWorldEvent', validateGuild, async (req, res) => {
+    await mongo.editWorldEvent(req.params.id, false);
+    res.redirect('/servers/' + req.params.id + '/stores')
+    
+})
 
-
+router.get('/servers/:id/activateWorldEvent', validateGuild, async (req, res) => {
+    await mongo.editWorldEvent(req.params.id, true);
+    res.redirect('/servers/' + req.params.id + '/stores')
+})
 
 //get store lists
 router.get('/servers/:id/stores', validateGuild, async (req, res) => {
-    var guildExists = await mongo.checkIfExists(req.params.id);
-    var allStores = await mongo.getAllStoresData(req.params.id);
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let allStores = await mongo.getAllStoresData(req.params.id);
+    let worldEvent = await mongo.getWorldEvent(req.params.id);
     res.render('dashboard/modules/stores', {
         guildExists,
         subtitle: 'Stores',
         allStores,
+        worldEvent
     })
     
 })
@@ -699,6 +710,11 @@ router.post('/servers/:id/makeTeam', async (req, res) => {
 })
 
 
+router.post('/servers/:id/worldEvent', async (req,res) => {
+    console.log(req.body);
+    await mongo.changeWorldEventCost(req.params.id, parseFloat(req.body['cost']))
+    res.redirect('/servers/' + req.params.id + '/stores');
+})
 
 
 //edit item 

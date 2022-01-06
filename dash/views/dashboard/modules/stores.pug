@@ -89,5 +89,21 @@ html(lang="en")
                                                 th.text-center(scope='col') Actions
                                         tbody
                                             +generateStoreTable(store)
-        
+                .container.mt-5 
+                    h4.text-center World Event Settings
+                        if worldEvent[0]['Status']
+                            a.btn.btn-primary#activateBtn(href='/servers/' + guild.id + '/deactivateWorldEvent', role='button',) Deactivate
+                        else
+                            a.btn.btn-primary#activateBtn(href='/servers/' + guild.id + '/activateWorldEvent', role='button',) Activate
+                    hr
+                    p.small Toggle the world event on/off which allows players to deposit their points towards a global common goal/award.
+                    if worldEvent[0]['Status']
+                         form#worldEventForm(name = 'worldEventForm', action='/servers/' + guild.id + '/worldEvent', method='POST')
+                            p.small(style={'font-style': 'italic'}) Currently: #{worldEvent[0]['Cost']}
+                            label(for='cost') Cost:
+                            input#cost(name = 'cost', type='number', input='cost', min = '0', step = '0.1')
+                            input#submitWorldEvent(type='submit', value = 'save')
+                        
+                   
+
         

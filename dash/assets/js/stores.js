@@ -6,8 +6,6 @@ window.addEventListener('load', () => {
 
 
 
-
-
 $('#editStoreForm').submit(function (event) {
     var newData = getData();
     
