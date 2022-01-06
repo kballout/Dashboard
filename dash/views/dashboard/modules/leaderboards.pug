@@ -34,221 +34,41 @@ html(lang="en")
         include ../../includes/navbar.pug
 
         section#mainContent
-            - var count
-            - count = 0
             h1.display-5.text-center Leaderboards
             p.lead.text-center Check your server's leaderboards.
             hr.pt-1(style={'background-color': 'white', size: '0.45px', opacity: '1', width: '400px', 'margin-left': 'auto', 'margin-right': 'auto'})
             if !guildExists
                 h3.text-center(style={'font-style': 'italic', color: 'red'}) Please initiate the server before attempting to change settings.
-            else
-                ul#pills-tab.nav.nav-pills.mb-3.justify-content-center(role='tablist')
-                    li.nav-item(role='presentation')
-                        button#pills-points-tab.nav-link.active(data-bs-toggle='pill', data-bs-target='#pills-points', type='button', role='tab', aria-controls='pills-points', aria-selected='true') Points
-                    li.nav-item(role='presentation')
-                        button#pills-rank-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-rank', type='button', role='tab', aria-controls='pills-rank', aria-selected='false') Rank
-                    li.nav-item(role='presentation')
-                        button#pills-attendance-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-attendance', type='button', role='tab', aria-controls='pills-attendance', aria-selected='false') Attendance
-                    li.nav-item(role='presentation')
-                        button#pills-exchange-tab.nav-link(data-bs-toggle='pill', data-bs-target='#pills-exchange', type='button', role='tab', aria-controls='pills-exchange', aria-selected='false') Exchange
-                #pills-tabContent.tab-content
-                    #pills-points.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-points-tab')
-                        .row
-                            .col-5
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top 10 of All Time
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th.col-4(scope='col') Points
-                                        tbody 
-                                            each user in usersByTotalPoints
-                                                if count === 10
-                                                   - break
-                                                - count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.totalPoints}
-                            .col-5
-                                - count = 0
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top 10 this Month
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th.col-4(scope='col') Points
-                                        tbody 
-                                            each user in usersByMonthlyPoints
-                                                if count === 10
-                                                   - break
-                                                - count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.monthlyPoints}
-                            .col-5.mt-4
-                                - count = 0
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top Currently
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th.col-4(scope='col') Points
-                                        tbody 
-                                            each user in usersByCurrentPoints
-                                                - count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.currentPoints}
-                    #pills-rank.tab-pane.fade(role='tabpanel', aria-labelledby='pills-rank-tab')
-                        -count = 0
-                        .row
-                            .col-8
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top Users by Level
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th(scope='col') Level
-                                                th.col-3(scope='col') EXP
-                                        tbody 
-                                            each user in usersByLevel
-                                                -count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.level}
-                                                    td #{user.xp} / #{user.untilNextLevel}
-                            -count = 0                        
-                            .col-5.mt-4
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top 10 who send Messages
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th.col-3(scope='col') Messages
-                                        tbody 
-                                            each user in usersByMessages
-                                                if count === 10
-                                                   - break
-                                                -count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td.text-center #{user.messages}
-                    #pills-attendance.tab-pane.fade(role='tabpanel', aria-labelledby='pills-attendance-tab')
-                        .row
-                            .col
-                                -count = 0
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top Attendance of All Time
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th.col-4(scope='col') Sessions
-                                        tbody 
-                                            each user in usersByAttendance
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.attendance}
-                            .col-5
-                                -count = 0
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top 10 Users with the Highest Attendance Streaks
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th(scope='col') Streak
-                                        tbody 
-                                            each user in usersByHighestStreak
-                                                if count === 10
-                                                   - break
-                                                -count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.highestStreak}
-                    #pills-exchange.tab-pane.fade(role='tabpanel', aria-labelledby='pills-exchange-tab')
-                        .row
-                            .col-5
-                                -count = 0
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top 10 of All Time
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th.col-4(scope='col') Points Exchanged
-                                        tbody 
-                                            each user in usersByTotalExchange
-                                                if count === 10
-                                                   - break
-                                                -count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.totalExchange}
-                            .col-5
-                                -count = 0
-                                .container
-                                    table.table.table-hover
-                                        h2.text-center Top 10 this Month
-                                        thead
-                                            tr
-                                                th(scope='col') #
-                                                th.col(scope='col') User
-                                                th(scope='col') Points Exchanged
-                                        tbody 
-                                            each user in usersByMonthlyExchange
-                                                if count === 10
-                                                   - break
-                                                -count++
-                                                tr 
-                                                    th(scope='row') #{count}
-                                                    td 
-                                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = user.username) 
-                                                        span.ps-2 ##{user.discriminator}
-                                                        span.ps-2 #{user.username} 
-                                                    td #{user.monthlyExchange}
+            else 
+                    table#statsTable.table.table-hover 
+                        thead 
+                            tr 
+                                th#user.text-center.col(scope='col') User
+                                th.col(scope='col', onclick='sortTable(1)') All Time Points
+                                th.col(scope='col', onclick='sortTable(2)') Points This Month
+                                th.col(scope='col', onclick='sortTable(3)') Current Points
+                                th.col(scope='col', onclick='sortTable(4)') Level
+                                th.col(scope='col') EXP
+                                th.col(scope='col', onclick='sortTable(6)') Msgs Sent
+                                th.col(scope='col', onclick='sortTable(7)') Attendance
+                                th.col(scope='col', onclick='sortTable(8)') Streaks
+                                th.col(scope='col', onclick='sortTable(9)') All Time Exchange
+                                th.col(scope='col', onclick='sortTable(10)') Exchange This Month
+                        tbody 
+                            each user in users 
+                                tr 
+                                    td#userAva 
+                                        img.round#avatar.me-3(src= ' ' + user.avatarUrl, alt = 'Avatar') 
+                                        span.ps-2 ##{user.discriminator}
+                                        span.ps-2 #{user.username}
+                                    td #{user.totalPoints}
+                                    td #{user.monthlyPoints}
+                                    td #{user.currentPoints}
+                                    td #{user.level}
+                                    td #{user.xp} / #{user.untilNextLevel}
+                                    td #{user.messages}
+                                    td #{user.attendance}
+                                    td #{user.highestStreak}
+                                    td #{user.totalExchange}
+                                    td #{user.monthlyExchange}
+        script(src='/js/leaderboards.js', defer)

@@ -1,30 +1,36 @@
 tr{
     line-height: 50px;
 }
-.container{
-    background-color: rgba(7, 15, 46, 0.952);
-    padding: 10px;
-    border: 2px solid white;
-    width: fit-content;
+
+thead{
+    cursor: pointer;
 }
-.row{
-    display: flexbox;
-    justify-content:space-around;
-    margin-top: 5px;
+#user, #userAva{
+    text-align: left;
+    cursor: default;
 }
 
-.col-4,.col-5{
-    width: fit-content;
-}
 table{
     color: white;
-    padding: 30px;
+    font-size: 12px;
+    background-color: rgba(7, 15, 46, 0.952);
+    border: 2px solid white;
     --bs-table-hover-bg: rgb(12 52 205 / 95%) !important;
 }
 td, th{
     color:white;
     white-space: nowrap;
+    text-align: center;
 }
+
+table td.shrink {
+    white-space: nowrap;
+}
+
+table td.expand {
+    width: 99%;
+}
+
 #avatar{
     width: 50px;
 }
