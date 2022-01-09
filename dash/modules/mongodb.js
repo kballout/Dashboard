@@ -12,7 +12,7 @@ class DB {
 
     async #connect() {
             let client = new MongoClient(this.#url);
-            await client.connect();
+            await client.connect({useUnifiedTopology: true});
            
             return client;
     }
