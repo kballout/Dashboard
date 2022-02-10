@@ -29,6 +29,7 @@ html(lang="en")
                 a(href = '/servers/' + guild.id + '/management').cursor-pointer #[i.fas.fa-users-cog.ps-2.text-muted] Team Management
                 a(href = '/servers/' + guild.id + '/stores').cursor-pointer #[i.fas.fa-store-alt.ps-2.text-muted] Stores
                 a(href = '/servers/' + guild.id + '/programs').cursor-pointer #[i.fas.fa-hiking.ps-2.text-muted] Programs
+                a(href = '/servers/' + guild.id + '/emblems').cursor-pointer #[i.fas.fa-medal.ps-2.text-muted] Emblems
                 a(href = '/servers/' + guild.id + '/stats').cursor-pointer #[i.fas.fa-chart-line.ps-2.text-muted] Stats
 
         include ../../../includes/navbar.pug
@@ -84,7 +85,7 @@ html(lang="en")
                                     p#currItem Currently: #{item[0]['Cost']}
                                     hr
                                     label(for='itemCost') Cost:
-                                    input#itemCost(name = 'itemCost', type='number', input='itemCost', min = 0)
+                                    input#itemCost(name = 'itemCost', type='number', input='itemCost', min = 0, step = 0.1)
                         .row  
                             input(type = 'submit', value = 'Save').btn.btn-primary.mt-2.me-2
                             a#return.btn.btn-primary.mt-2(href='/servers/' + guild.id + '/stores', role='button') Cancel

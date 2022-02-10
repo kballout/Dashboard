@@ -102,7 +102,7 @@ router.get('/servers/:id/moderation', validateGuild, async (req, res) => {
 
 
 
-
+//TEAMS
 //lists all teams
 router.get('/servers/:id/management', validateGuild, async (req, res) => {
     var guildExists = await mongo.checkIfExists(req.params.id);
@@ -113,7 +113,6 @@ router.get('/servers/:id/management', validateGuild, async (req, res) => {
         allTeams,
     })
 })
-
 //edit one team
 router.get('/servers/:id/edit/:teamName', validateGuild, async (req, res) => {
     var guildExists = await mongo.checkIfExists(req.params.id);
@@ -124,7 +123,6 @@ router.get('/servers/:id/edit/:teamName', validateGuild, async (req, res) => {
         guildExists
     })
 })
-
 //create a team
 router.get('/servers/:id/makeTeam', validateGuild, async (req, res) => {
     var guildExists = await mongo.checkIfExists(req.params.id);
@@ -137,7 +135,6 @@ router.get('/servers/:id/makeTeam', validateGuild, async (req, res) => {
     })
 	
 })
-
 //delete team
 router.get('/servers/:id/delete/:teamName', validateGuild, async (req, res) => {
     if (await mongo.checkTeamNameValid(req.params.id, req.params.teamName)){
@@ -177,18 +174,23 @@ router.get('/servers/:id/terminate', validateGuild, async (req, res) => {
 })
 
 
+
+
 //world event
 router.get('/servers/:id/deactivateWorldEvent', validateGuild, async (req, res) => {
     await mongo.editWorldEvent(req.params.id, false);
     res.redirect('/servers/' + req.params.id + '/stores')
     
 })
-
 router.get('/servers/:id/activateWorldEvent', validateGuild, async (req, res) => {
     await mongo.editWorldEvent(req.params.id, true);
     res.redirect('/servers/' + req.params.id + '/stores')
 })
 
+
+
+
+//STORES
 //get store lists
 router.get('/servers/:id/stores', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
@@ -202,7 +204,6 @@ router.get('/servers/:id/stores', validateGuild, async (req, res) => {
     })
     
 })
-
 //get single item to edit
 router.get('/servers/:id/editStore/:storeNum/:itemNumber', validateGuild, async (req, res) => {
     var store = req.params.storeNum;
@@ -216,7 +217,6 @@ router.get('/servers/:id/editStore/:storeNum/:itemNumber', validateGuild, async 
     })
     
 })
-
 //create item page
 router.get('/servers/:id/makeItem/:storeNum', validateGuild, async (req, res) => {
     var store = req.params.storeNum;
@@ -228,7 +228,6 @@ router.get('/servers/:id/makeItem/:storeNum', validateGuild, async (req, res) =>
         store
     }) 
 })
-
 //delete item 
 router.get('/servers/:id/delete/:storeNum/:itemNumber', validateGuild, async (req, res) => {
     await mongo.deleteItem(req.params.id, req.params.storeNum ,parseInt(req.params.itemNumber))
@@ -236,7 +235,6 @@ router.get('/servers/:id/delete/:storeNum/:itemNumber', validateGuild, async (re
     res.redirect('/servers/' + req.params.id + '/stores');
     
 })
-
 //additional stores creation page
 router.get('/servers/:id/createNewStore', validateGuild, async (req, res) => {
     var guildExists = await mongo.checkIfExists(req.params.id);
@@ -248,7 +246,6 @@ router.get('/servers/:id/createNewStore', validateGuild, async (req, res) => {
     })
     
 })
-
 //edit settings for additional store
 router.get('/servers/:id/editAdditionalStore/:store', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
@@ -263,7 +260,6 @@ router.get('/servers/:id/editAdditionalStore/:store', validateGuild, async (req,
     })
     
 })
-
 router.get('/servers/:id/deleteStore/:store', validateGuild, async (req,res) => {
     let options = await mongo.getAllCurrentOptions(req.params.id, req.params.store);
     let store2Info;
@@ -282,6 +278,8 @@ router.get('/servers/:id/deleteStore/:store', validateGuild, async (req,res) => 
     res.redirect('/servers/' + req.params.id + '/Stores')
 })
 
+
+
 //programs
 router.get('/servers/:id/programs', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
@@ -293,7 +291,6 @@ router.get('/servers/:id/programs', validateGuild, async (req, res) => {
     })
     
 })
-
 //edit program
 router.get('/servers/:id/editprogram/:program', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
@@ -308,7 +305,6 @@ router.get('/servers/:id/editprogram/:program', validateGuild, async (req, res) 
     })
     
 })
-
 //create program
 router.get('/servers/:id/createprogram', validateGuild, async (req, res) => {
     let guildExists = await mongo.checkIfExists(req.params.id);
@@ -323,7 +319,6 @@ router.get('/servers/:id/createprogram', validateGuild, async (req, res) => {
     })
     
 })
-
 //delete program
 router.get('/servers/:id/deleteprogram/:program', validateGuild, async (req, res) => {
     await mongo.deleteProgram(req.params.id, parseInt(req.params.program));
@@ -332,6 +327,32 @@ router.get('/servers/:id/deleteprogram/:program', validateGuild, async (req, res
 })
 
 
+//Emblems
+//get all emblems
+router.get('/servers/:id/emblems', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let emblems = await mongo.getAllEmblemInfo(req.params.id);
+    res.render('dashboard/modules/emblems', {
+        guildExists,
+        emblems,
+        subtitle: 'Emblems'
+    })
+})
+//edit emblem
+router.get('/servers/:id/editEmblem/:emblemName', validateGuild, async (req, res) => {
+    let guildExists = await mongo.checkIfExists(req.params.id);
+    let emblem = await mongo.getOneEmblem(req.params.id, req.params.emblemName);
+    let double = false;
+    if(emblem['Name'] === 'Total Points' || emblem['Name'] === 'Total Exchange' || emblem['Name'] === 'Donated Points'){
+        double = true;
+    }
+    res.render('dashboard/modules/emblem/editEmblem', {
+        guildExists,
+        emblem,
+        double,
+        subtitle: 'Edit Emblem'
+    })
+})
 
 
 
@@ -659,6 +680,7 @@ router.post('/servers/:id/makeTeam', async (req, res) => {
 })
 
 
+//World event
 router.post('/servers/:id/worldEvent', async (req,res) => {
     console.log(req.body);
     await mongo.changeWorldEventCost(req.params.id, parseFloat(req.body['cost']))
@@ -845,6 +867,19 @@ router.post('/servers/:id/editprogram/:program', async (req, res) => {
     
 })
 
+
+//edit emblem info
+router.post('/servers/:id/editEmblem/:emblem', async (req,res) => {
+    for (let [key, value] of Object.entries(req.body)){
+        if(key === 'emblemTitle'){
+            await mongo.editEmblemTitle(req.params.id, req.params.emblem, value);
+        }
+        if(key === 'emblemAmount'){
+            await mongo.editEmblemAmount(req.params.id, req.params.emblem, parseFloat(value));
+        }
+    }
+    res.redirect('/servers/' + req.params.id + '/emblems');
+})
 
 
 function capitalizeTheFirstLetterOfEachWord(words) {

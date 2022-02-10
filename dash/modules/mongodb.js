@@ -978,7 +978,52 @@ class DB {
     }
 
 
+    //EMBLEMS
+    async getAllEmblemInfo(dbName){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Emblems");
+        var allEmblems = [];
+        let cursor = doc.find();
+        while(await cursor.hasNext()){
+            allEmblems.push(await cursor.next());
+        }
+       return allEmblems;    
+    }
 
+    async getOneEmblem(dbName, emblem){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Emblems");
+        var query = {Name: emblem};
+        return await doc.findOne(query);    
+    }
+
+    async editEmblemTitle(dbName, emblem, title){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Emblems");
+        var search = 'Information.Title';
+        let filter = {Name: emblem};
+        let update = {$set:{[search]: title}};
+        await doc.updateOne(filter, update);
+    }
+
+    async editEmblemAmount(dbName, emblem, amount){
+        let client = this.#connect();
+        database = (await client).db(dbName);
+        let doc = database.collection("Emblems");
+        var search = 'Information.Amount';
+        let filter = {Name: emblem};
+        let update 
+        if(emblem === 'Total Points' || emblem === 'Total Exchange' || emblem === 'Donated Points'){
+           update = {$set:{[search]: Double(amount)}};
+        }
+        else{
+            update = {$set:{[search]: amount}}; 
+        }
+        await doc.updateOne(filter, update);
+    }
 
     //LEADERBOARDS
     async getTopUsersPoints(dbName){
@@ -1035,7 +1080,7 @@ class DB {
         amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.October', {'User ID': user}));
         amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.November', {'User ID': user}));
         amount += parseFloat(await doc.distinct('Statistics.Points Earned.Monthly.December', {'User ID': user}));
-        return amount;
+        return amount.toFixed(1);
     }
 
     async getUserTotalExchange(dbName, user){
@@ -1062,7 +1107,7 @@ class DB {
         amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.October', {'User ID': user}));
         amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.November', {'User ID': user}));
         amount += parseFloat(await doc.distinct('Statistics.Exchange.Monthly.December', {'User ID': user}));
-        return amount;
+        return amount.toFixed(1);
     }
 
     async getUserHighestStreak(dbName, user){
